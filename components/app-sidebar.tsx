@@ -1,6 +1,6 @@
 "use client"
 
-import { BookOpen, Home, Pencil, Mic, BarChart, Settings, LogOut, Moon, Sun, Shield, Smartphone } from "lucide-react"
+import { BookOpen, Home, Pencil, Mic, BarChart, Settings, LogOut, Moon, Sun, Shield, Smartphone, FileText, Library } from "lucide-react"
 import { usePathname } from "next/navigation"
 import { useTheme } from "next-themes"
 import { useSession, signOut } from "next-auth/react"
@@ -50,6 +50,16 @@ export function AppSidebar() {
       title: "Essay Writing",
       icon: Pencil,
       href: "/essay",
+    },
+    {
+      title: "IELTS Essay",
+      icon: FileText,
+      href: "/ielts-essay",
+    },
+    {
+      title: "My Essays",
+      icon: Library,
+      href: "/my-essays",
     },
     {
       title: "Speaking Practice",

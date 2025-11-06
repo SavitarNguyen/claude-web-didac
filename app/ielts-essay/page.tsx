@@ -85,6 +85,11 @@ export default function IELTSEssayPage() {
 
                 // Save to database if user is logged in
                 if (session) {
+                  // Extract corrected content from paragraph revisions
+                  const correctedContent = parsedFeedback.paragraphs
+                    .map((p) => p.revisedParagraph)
+                    .join("\n\n")
+
                   await fetch("/api/essays", {
                     method: "POST",
                     headers: {
@@ -93,6 +98,7 @@ export default function IELTSEssayPage() {
                     body: JSON.stringify({
                       title: essayTitle || "Untitled IELTS Essay",
                       content: essayText,
+                      correctedContent,
                       score: parsedFeedback.overallBand,
                       feedback: parsedFeedback,
                     }),

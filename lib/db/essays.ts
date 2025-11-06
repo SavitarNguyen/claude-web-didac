@@ -4,6 +4,7 @@ export interface Essay {
   id?: string
   title: string
   content: string
+  correctedContent?: string
   score?: number
   feedback?: any
   userId: string
@@ -32,6 +33,7 @@ export async function getEssaysByUserId(userId: string, limit = 10) {
     _id: essay.id,
     title: essay.title,
     content: essay.content,
+    correctedContent: essay.corrected_content,
     score: essay.score,
     feedback: essay.feedback,
     userId: essay.user_id,
@@ -56,6 +58,7 @@ export async function getEssayById(id: string) {
     _id: data.id,
     title: data.title,
     content: data.content,
+    correctedContent: data.corrected_content,
     score: data.score,
     feedback: data.feedback,
     userId: data.user_id,
@@ -70,18 +73,26 @@ export async function createEssay(essayData: Omit<Essay, "id" | "createdAt" | "u
 
   const now = new Date().toISOString()
 
-  const { data, error } = await supabase
+  // Build the insert object conditionally
+  const insertData: any = {
+    title: essayData.title,
+    content: essayData.content,
+    score: essayData.score,
+    feedback: essayData.feedback,
+    user_id: essayData.userId,
+    is_flagged: essayData.isFlagged,
+    created_at: now,
+    updated_at: now,
+  }
+
+  // Only include corrected_content if it exists (in case column hasn't been added yet)
+  if (essayData.correctedContent !== undefined) {
+    insertData.corrected_content = essayData.correctedContent
+  }
+
+  const { data, error} = await supabase
     .from("essays")
-    .insert({
-      title: essayData.title,
-      content: essayData.content,
-      score: essayData.score,
-      feedback: essayData.feedback,
-      user_id: essayData.userId,
-      is_flagged: essayData.isFlagged,
-      created_at: now,
-      updated_at: now,
-    })
+    .insert(insertData)
     .select()
 
   if (error) {
@@ -103,6 +114,7 @@ export async function updateEssay(id: string, essayData: Partial<Essay>) {
 
   if (essayData.title) updates.title = essayData.title
   if (essayData.content) updates.content = essayData.content
+  if (essayData.correctedContent) updates.corrected_content = essayData.correctedContent
   if (essayData.score !== undefined) updates.score = essayData.score
   if (essayData.feedback) updates.feedback = essayData.feedback
   if (essayData.isFlagged !== undefined) updates.is_flagged = essayData.isFlagged
@@ -137,6 +149,7 @@ export async function getFlaggedEssays(limit = 10) {
     _id: essay.id,
     title: essay.title,
     content: essay.content,
+    correctedContent: essay.corrected_content,
     score: essay.score,
     feedback: essay.feedback,
     userId: essay.user_id,

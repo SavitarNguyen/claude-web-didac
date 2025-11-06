@@ -137,16 +137,38 @@ export const authOptions: NextAuthOptions = {
       }
     },
     async jwt({ token, user, account }: { token: any; user: any; account?: any }) {
-      if (user) {
+      // For credentials login, use the provided user data
+      if (user && account?.provider === "credentials") {
         token.role = user.role
         token.id = user.id
+        return token
       }
-      
-      // If this is a Google sign-in, ensure we have the user data
-      if (account?.provider === "google" && user) {
-        console.log("JWT callback for Google user:", user.email)
+
+      // If this is a Google sign-in OR if we have an existing token that needs the DB user ID
+      if ((account?.provider === "google" && user?.email) || (token?.email && !token?.id?.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i))) {
+        const emailToLookup = user?.email || token?.email
+        console.log("JWT callback - fetching database user for:", emailToLookup)
+
+        try {
+          const supabase = createServerClient()
+          const { data: dbUser, error } = await supabase
+            .from("users")
+            .select("id, role")
+            .eq("email", emailToLookup)
+            .single()
+
+          if (!error && dbUser) {
+            console.log("Found database user with UUID:", dbUser.id)
+            token.id = dbUser.id
+            token.role = dbUser.role
+          } else {
+            console.error("Error fetching database user in JWT callback:", error)
+          }
+        } catch (error) {
+          console.error("JWT callback error:", error)
+        }
       }
-      
+
       return token
     },
     async session({ session, token }: { session: any; token: any }) {
