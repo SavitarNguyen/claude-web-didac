@@ -124,6 +124,8 @@ export const authOptions: NextAuthOptions = {
             return false
           } else {
             console.log("Existing user found:", existingUser)
+            // Update the user object with the database ID
+            user.id = existingUser.id
           }
         }
         
