@@ -40,9 +40,18 @@ export default function ContentManagementPage() {
     try {
       const response = await fetch("/api/admin/students")
       const data = await response.json()
+
+      // Handle error response
+      if (data.error || !Array.isArray(data)) {
+        console.error("Error loading students:", data.error || "Invalid response")
+        setStudents([])
+        return
+      }
+
       setStudents(data)
     } catch (error) {
       console.error("Error loading students:", error)
+      setStudents([])
       toast({
         title: "Error",
         description: "Failed to load students",

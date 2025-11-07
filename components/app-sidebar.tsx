@@ -1,6 +1,6 @@
 "use client"
 
-import { BookOpen, Home, Pencil, Mic, BarChart, Settings, LogOut, Moon, Sun, Shield, Smartphone, FileText, Library } from "lucide-react"
+import { BookOpen, Home, Pencil, Mic, BarChart, Settings, LogOut, Moon, Sun, Shield, Smartphone, FileText, Library, ChevronDown, PenTool, FolderOpen } from "lucide-react"
 import { usePathname } from "next/navigation"
 import { useTheme } from "next-themes"
 import { useSession, signOut } from "next-auth/react"
@@ -35,6 +35,8 @@ export function AppSidebar() {
     setMounted(true)
   }, [])
 
+  const [ieltsExpanded, setIeltsExpanded] = useState(true)
+
   const menuItems = [
     {
       title: "Dashboard",
@@ -45,21 +47,6 @@ export function AppSidebar() {
       title: "Flashcards",
       icon: BookOpen,
       href: "/flashcards",
-    },
-    {
-      title: "Essay Writing",
-      icon: Pencil,
-      href: "/essay",
-    },
-    {
-      title: "IELTS Essay",
-      icon: FileText,
-      href: "/ielts-essay",
-    },
-    {
-      title: "My Essays",
-      icon: Library,
-      href: "/my-essays",
     },
     {
       title: "Speaking Practice",
@@ -75,6 +62,24 @@ export function AppSidebar() {
       title: "Mobile Apps",
       icon: Smartphone,
       href: "/mobile",
+    },
+  ]
+
+  const ieltsEssayItems = [
+    {
+      title: "Write an Essay",
+      icon: PenTool,
+      href: "/ielts-essay",
+    },
+    {
+      title: "My Essays",
+      icon: Library,
+      href: "/ielts-essay/my-essays",
+    },
+    {
+      title: "Resources",
+      icon: FolderOpen,
+      href: "/ielts-essay/resources",
     },
   ]
 
@@ -127,6 +132,32 @@ export function AppSidebar() {
                     <a href={item.href}>
                       <item.icon className="h-5 w-5" />
                       <span>{item.title}</span>
+                    </a>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+
+              {/* IELTS Essay Collapsible Section */}
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  onClick={() => setIeltsExpanded(!ieltsExpanded)}
+                  tooltip="IELTS Essay"
+                  className="w-full justify-between"
+                >
+                  <div className="flex items-center">
+                    <FileText className="h-5 w-5 mr-2" />
+                    <span>IELTS Essay</span>
+                  </div>
+                  <ChevronDown className={`h-4 w-4 transition-transform ${ieltsExpanded ? 'rotate-180' : ''}`} />
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+
+              {ieltsExpanded && ieltsEssayItems.map((item) => (
+                <SidebarMenuItem key={item.title} className="pl-4">
+                  <SidebarMenuButton asChild isActive={pathname === item.href} tooltip={item.title}>
+                    <a href={item.href}>
+                      <item.icon className="h-4 w-4" />
+                      <span className="text-sm">{item.title}</span>
                     </a>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
