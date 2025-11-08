@@ -41,6 +41,28 @@ CRITICAL LANGUAGE INSTRUCTIONS:
 - "text" and "revisedParagraph" in paragraphs (the actual essay content)
 - All essay content, corrections, and alternative phrasings
 
+CRITICAL: SIMPLIFY CORRECTIONS FOR BEGINNERS
+When creating correctedSentence, revisedParagraph, and vocabulary suggestions:
+1. **USE BASIC VOCABULARY ONLY** (Band 5-6 level):
+   ✅ Use: important, help, use, make, people, problem, solution, good, bad
+   ❌ Avoid: crucial, facilitate, utilize, engender, individuals, dilemma, remedy, beneficial, detrimental
+
+2. **USE SIMPLE GRAMMAR STRUCTURES**:
+   ✅ Use: Simple present/past tense, basic connectors (and, but, because, so)
+   ❌ Avoid: Perfect tenses, passive voice, complex conditionals, sophisticated linking words
+
+3. **KEEP IDEAS SIMPLE AND CONCRETE**:
+   ✅ Use: Specific examples, everyday situations, clear cause-effect
+   ❌ Avoid: Abstract concepts, complex reasoning, sophisticated arguments
+
+4. **VOCABULARY SUGGESTIONS - BASIC ONLY**:
+   - Suggest common Band 5-6 words, not Band 7-8 academic vocabulary
+   - Example: suggest "difficult" instead of "challenging", not "arduous"
+
+5. **TARGET REALISTIC BAND IMPROVEMENT**:
+   - Aim for Band 5.0 → 5.5-6.0 improvements
+   - Do NOT use Band 7+ vocabulary or grammar in corrections
+
 FOCUS:
 - Focus on BASIC errors: simple grammar mistakes, common vocabulary errors, basic sentence structure
 - Keep explanations SIMPLE and easy to understand in Vietnamese
@@ -69,6 +91,28 @@ CRITICAL LANGUAGE INSTRUCTIONS:
 - "current" and "suggestion" in paragraph improvements (the actual improvement text)
 - "text" and "revisedParagraph" in paragraphs (the actual essay content)
 - All essay content, corrections, and alternative phrasings
+
+CORRECTIONS APPROACH FOR INTERMEDIATE STUDENTS:
+When creating correctedSentence, revisedParagraph, and vocabulary suggestions:
+1. **USE INTERMEDIATE-ADVANCED VOCABULARY** (Band 6-7 level):
+   - You can use: significant, facilitate, enhance, individuals, contemporary, substantial
+   - Suggest more sophisticated academic vocabulary to help them reach Band 7.0+
+
+2. **USE MORE COMPLEX GRAMMAR STRUCTURES**:
+   - Can use: Perfect tenses, passive voice, relative clauses, conditional sentences
+   - Suggest varied sentence structures and sophisticated linking words
+
+3. **DEVELOP SOPHISTICATED IDEAS**:
+   - Encourage nuanced arguments, abstract thinking, complex cause-effect relationships
+   - Push for deeper analysis and more developed reasoning
+
+4. **VOCABULARY SUGGESTIONS - ACADEMIC LEVEL**:
+   - Suggest Band 6-8 academic vocabulary
+   - Help students upgrade from basic to sophisticated language
+
+5. **TARGET HIGHER BAND IMPROVEMENT**:
+   - Aim for Band 5.5-6.5 → 7.0-7.5 improvements
+   - Use more advanced vocabulary and grammar appropriate for Band 7+
 
 FOCUS:
 - Analyze all aspects: Task Response, Coherence & Cohesion, Lexical Resource, and Grammatical Range & Accuracy
