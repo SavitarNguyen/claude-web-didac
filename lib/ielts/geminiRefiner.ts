@@ -396,14 +396,19 @@ For EACH paragraph, provide:
 **1. revisedParagraph Field (CONSERVATIVE IDEA-FOCUSED revision)**
 Generate a CONSERVATIVE, REALISTIC revised version that:
 - **MATCH STUDENT'S BAND LEVEL** - Realistic improvements (e.g., Band 6 → 6.5-7, NOT Band 6 → Band 9)
-- **PRESERVE VOCABULARY AND GRAMMAR EXACTLY** - Use student's exact wording and grammatical style, but you must fix basic grammar and vocabulary mistakes
-- DO NOT fix grammar errors, DO NOT replace vocabulary, DO NOT correct spelling/punctuation
+- **PRESERVE VOCABULARY AND GRAMMAR EXACTLY** - Use student's exact wording and grammatical style
+- **CRITICAL: DO NOT FIX GRAMMAR/VOCABULARY ERRORS** - Grammar and vocabulary corrections belong in sentence-level feedback ONLY
+- **ONLY FIX IDEAS AND COHERENCE** - Replace vague sentences with clearer ideas, add development to underdeveloped points
+- Keep all sentences that are grammatically acceptable EXACTLY as the student wrote them (even if they have minor grammar errors)
 
 **CRITICAL: Two types of changes in revisedParagraph:**
 
-**TYPE 1 - REPLACE weak/vague sentences (from "issues" array):**
-- If a sentence has a TR/CC issue (quote in "issues" array), COMPLETELY REMOVE that sentence
-- REPLACE it with an improved version that addresses the issue (with vocab and grammar similar to the student's level. Do NOT use much more advanced vocab and grammar - only 0.5-1.0 band level, as the main purpose is to upgrade students' ideas and reasoning)
+**TYPE 1 - REPLACE weak/vague sentences (from "issues" array - TR/CC ISSUES ONLY):**
+- If a sentence has a TR/CC issue (vague idea, poor coherence), COMPLETELY REMOVE that sentence
+- REPLACE it with an improved version that addresses the IDEA or COHERENCE issue
+- Use vocabulary and grammar similar to the student's level (0.5-1.0 band level improvement)
+- The purpose is to upgrade students' IDEAS and REASONING, NOT grammar/vocabulary
+- DO NOT fix grammar errors in the replacement - keep student-level grammar
 - DO NOT keep the original sentence and add improvements - ONLY show the improved replacement
 - The diff will show: original sentence with red strikethrough → improved sentence in yellow highlight
 
@@ -417,9 +422,15 @@ Generate a CONSERVATIVE, REALISTIC revised version that:
 
 **TYPE 2 - ADD development sentences (from "improvements" array):**
 - If a sentence is acceptable but could be developed further (in "improvements" array)
-- KEEP that sentence EXACTLY as-is (word-for-word, no changes)
+- KEEP that sentence EXACTLY as-is (word-for-word, NO changes whatsoever)
+- DO NOT fix grammar, vocabulary, or spelling in this sentence - keep it identical to the original
 - ADD the suggested development sentences AFTER it
 - The diff will show: original kept as-is → new sentences in yellow highlight
+
+**CRITICAL: If a sentence has NO TR/CC issues, keep it VERBATIM in revisedParagraph**
+- Even if it has minor grammar errors (these are fixed in sentence-level feedback)
+- Even if vocabulary could be upgraded (this is suggested in sentence-level feedback)
+- Only change sentences that have IDEA or COHERENCE problems
 
 **Example:**
 - Original: "Social media connects people."
@@ -1066,14 +1077,19 @@ For EACH paragraph, provide:
 **1. revisedParagraph Field (CONSERVATIVE IDEA-FOCUSED revision)**
 Generate a CONSERVATIVE, REALISTIC revised version that:
 - **MATCH STUDENT'S BAND LEVEL** - Realistic improvements (e.g., Band 6 → 6.5-7, NOT Band 6 → Band 9)
-- **PRESERVE VOCABULARY AND GRAMMAR EXACTLY** - Use student's exact wording and grammatical style, but you must fix basic grammar and vocabulary mistakes
-- DO NOT fix grammar errors, DO NOT replace vocabulary, DO NOT correct spelling/punctuation
+- **PRESERVE VOCABULARY AND GRAMMAR EXACTLY** - Use student's exact wording and grammatical style
+- **CRITICAL: DO NOT FIX GRAMMAR/VOCABULARY ERRORS** - Grammar and vocabulary corrections belong in sentence-level feedback ONLY
+- **ONLY FIX IDEAS AND COHERENCE** - Replace vague sentences with clearer ideas, add development to underdeveloped points
+- Keep all sentences that are grammatically acceptable EXACTLY as the student wrote them (even if they have minor grammar errors)
 
 **CRITICAL: Two types of changes in revisedParagraph:**
 
-**TYPE 1 - REPLACE weak/vague sentences (from "issues" array):**
-- If a sentence has a TR/CC issue (quote in "issues" array), COMPLETELY REMOVE that sentence
-- REPLACE it with an improved version that addresses the issue (with vocab and grammar similar to the student's level. Do NOT use much more advanced vocab and grammar - only 0.5-1.0 band level, as the main purpose is to upgrade students' ideas and reasoning)
+**TYPE 1 - REPLACE weak/vague sentences (from "issues" array - TR/CC ISSUES ONLY):**
+- If a sentence has a TR/CC issue (vague idea, poor coherence), COMPLETELY REMOVE that sentence
+- REPLACE it with an improved version that addresses the IDEA or COHERENCE issue
+- Use vocabulary and grammar similar to the student's level (0.5-1.0 band level improvement)
+- The purpose is to upgrade students' IDEAS and REASONING, NOT grammar/vocabulary
+- DO NOT fix grammar errors in the replacement - keep student-level grammar
 - DO NOT keep the original sentence and add improvements - ONLY show the improved replacement
 - The diff will show: original sentence with red strikethrough → improved sentence in yellow highlight
 
@@ -1087,9 +1103,15 @@ Generate a CONSERVATIVE, REALISTIC revised version that:
 
 **TYPE 2 - ADD development sentences (from "improvements" array):**
 - If a sentence is acceptable but could be developed further (in "improvements" array)
-- KEEP that sentence EXACTLY as-is (word-for-word, no changes)
+- KEEP that sentence EXACTLY as-is (word-for-word, NO changes whatsoever)
+- DO NOT fix grammar, vocabulary, or spelling in this sentence - keep it identical to the original
 - ADD the suggested development sentences AFTER it
 - The diff will show: original kept as-is → new sentences in yellow highlight
+
+**CRITICAL: If a sentence has NO TR/CC issues, keep it VERBATIM in revisedParagraph**
+- Even if it has minor grammar errors (these are fixed in sentence-level feedback)
+- Even if vocabulary could be upgraded (this is suggested in sentence-level feedback)
+- Only change sentences that have IDEA or COHERENCE problems
 
 **Example:**
 - Original: "Social media connects people."
