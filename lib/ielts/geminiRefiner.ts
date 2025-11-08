@@ -21,24 +21,54 @@ function getLevelInstructions(level?: '5.0_or_below' | '5.5_to_6.5' | '7.0_or_ab
     case '5.0_or_below':
       return `
 STUDENT LEVEL: 5.0 or below (Beginner)
-FEEDBACK LANGUAGE: Vietnamese (Tiếng Việt)
+FEEDBACK LANGUAGE: Vietnamese (Tiếng Việt) for explanations ONLY
 FOCUS AREAS: Basic vocabulary, basic grammar, and fundamental ideas only
 
-IMPORTANT:
-- ALL feedback fields (feedback, issue, explanation, howToRevise, etc.) MUST be in Vietnamese
+CRITICAL LANGUAGE INSTRUCTIONS:
+✅ MUST be in Vietnamese (Tiếng Việt):
+- "feedback" field (band score explanations)
+- "issue" field (problem descriptions)
+- "explanation" field (why something is wrong)
+- "howToRevise" field (how to fix it)
+- "strengths" and "improvements" arrays
+- "fullReport" field
+
+❌ MUST remain in English:
+- "originalSentence" (the student's essay sentences)
+- "correctedSentence" (the corrected versions)
+- "original" and "revised" in wordCorrections (the actual words/phrases)
+- "suggestion" in vocabSuggestions (the actual vocabulary words)
+- "text" and "revisedParagraph" in paragraphs (the actual essay content)
+
+FOCUS:
 - Focus on BASIC errors: simple grammar mistakes, common vocabulary errors, basic sentence structure
-- Keep explanations SIMPLE and easy to understand
+- Keep explanations SIMPLE and easy to understand in Vietnamese
 - Avoid complex grammatical terminology - use simple Vietnamese explanations
 - Prioritize the most fundamental improvements that will help students reach Band 5.5-6.0`;
 
     case '5.5_to_6.5':
       return `
 STUDENT LEVEL: 5.5 - 6.5 (Intermediate)
-FEEDBACK LANGUAGE: Vietnamese (Tiếng Việt)
+FEEDBACK LANGUAGE: Vietnamese (Tiếng Việt) for explanations ONLY
 FOCUS AREAS: Full comprehensive analysis (all IELTS criteria)
 
-IMPORTANT:
-- ALL feedback fields (feedback, issue, explanation, howToRevise, etc.) MUST be in Vietnamese
+CRITICAL LANGUAGE INSTRUCTIONS:
+✅ MUST be in Vietnamese (Tiếng Việt):
+- "feedback" field (band score explanations)
+- "issue" field (problem descriptions)
+- "explanation" field (why something is wrong)
+- "howToRevise" field (how to fix it)
+- "strengths" and "improvements" arrays
+- "fullReport" field
+
+❌ MUST remain in English:
+- "originalSentence" (the student's essay sentences)
+- "correctedSentence" (the corrected versions)
+- "original" and "revised" in wordCorrections (the actual words/phrases)
+- "suggestion" in vocabSuggestions (the actual vocabulary words)
+- "text" and "revisedParagraph" in paragraphs (the actual essay content)
+
+FOCUS:
 - Analyze all aspects: Task Response, Coherence & Cohesion, Lexical Resource, and Grammatical Range & Accuracy
 - Provide detailed, comprehensive feedback to help students reach Band 7.0+
 - Use clear Vietnamese explanations with appropriate IELTS terminology`;
@@ -46,11 +76,17 @@ IMPORTANT:
     case '7.0_or_above':
       return `
 STUDENT LEVEL: 7.0 or above (Advanced)
-FEEDBACK LANGUAGE: English
+FEEDBACK LANGUAGE: English for ALL fields
 FOCUS AREAS: Full comprehensive analysis with advanced insights
 
-IMPORTANT:
-- ALL feedback fields (feedback, issue, explanation, howToRevise, etc.) MUST be in English
+CRITICAL LANGUAGE INSTRUCTIONS:
+✅ ALL fields MUST be in English:
+- All feedback, explanations, issues, howToRevise fields
+- Essay content (originalSentence, correctedSentence, revisedParagraph)
+- Vocabulary words and suggestions
+- Strengths, improvements, and fullReport
+
+FOCUS:
 - Analyze all aspects with high-level insights and nuanced observations
 - Focus on subtle improvements that will help students reach Band 8.0+
 - Provide sophisticated feedback with advanced IELTS assessment criteria`;
@@ -58,8 +94,12 @@ IMPORTANT:
     default:
       return `
 STUDENT LEVEL: 5.5 - 6.5 (Intermediate - Default)
-FEEDBACK LANGUAGE: Vietnamese (Tiếng Việt)
-FOCUS AREAS: Full comprehensive analysis (all IELTS criteria)`;
+FEEDBACK LANGUAGE: Vietnamese (Tiếng Việt) for explanations ONLY
+FOCUS AREAS: Full comprehensive analysis (all IELTS criteria)
+
+CRITICAL LANGUAGE INSTRUCTIONS:
+✅ MUST be in Vietnamese: feedback, issue, explanation, howToRevise, strengths, improvements, fullReport
+❌ MUST remain in English: originalSentence, correctedSentence, original/revised words, vocabulary suggestions, essay content`;
   }
 }
 
