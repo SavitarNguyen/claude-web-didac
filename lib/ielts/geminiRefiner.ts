@@ -455,6 +455,40 @@ Conclusion (1-2 sentences):
 - If body paragraphs lack clear topic sentences or development, note as TR/CC issues
 - If conclusion introduces new ideas, note this as a TR issue
 
+REASONING FRAMEWORKS TO STRENGTHEN IDEAS (Task Response):
+
+When suggesting improvements to underdeveloped ideas, guide students to use these reasoning frameworks:
+
+**1. CTA – Characteristic-Based Argument**
+**When to use:** Explaining behaviors, trends, or phenomena that happen due to inherent human traits or natural characteristics.
+**How it works:** Connect the topic to human nature, innate needs, or natural tendencies.
+**Example:**
+Topic: "Nowadays, many people spend hours on social networks. Does this have a positive or negative impact?"
+CTA Application: "One of the main reasons why many people spend too much time on social media is that human nature always wants to connect with others. From ancient times, humans have had the need to communicate and update information about their surroundings. Nowadays, social networks are simply a new tool to satisfy this innate need, which makes many people spend a lot of time browsing their phones."
+**Key elements:** Human nature → innate need → modern manifestation
+
+**2. TCA – Time-Based Contrast Argument**
+**When to use:** Showing how something has changed over time (past vs. present).
+**How it works:** Contrast past situations with current reality to show cause-effect relationships.
+**Example:**
+Topic: "Many people assume that modern life makes people lonelier than before. Do you agree?"
+TCA Application: "Previously, families would gather together after a day's work, sharing stories together over cozy meals. However, today, the advancement of technology has changed this habit. Many people spend most of their time browsing their phones or computers, leading to a lack of social interaction and increased feelings of loneliness."
+**Key elements:** Past situation → Present change → Consequence
+
+**3. CBA – Context-Based Argument**
+**When to use:** Making ideas more realistic, local, or relatable with real-life situations or cultural context.
+**How it works:** Add specific cultural or local context to make arguments more practical and convincing.
+**Example:**
+Topic: "Kids these days spend too much time on their phones. Is this harmful or not?"
+CBA Application: "In Vietnam, many parents tend to give their children their phones when they want their children to sit still in a place to eat or when their parents are busy. However, excessive exposure to screens at an early age can negatively impact a child's intellectual development and communication skills."
+**Key elements:** Specific context (location/culture) → Common practice → Impact
+
+**APPLYING FRAMEWORKS IN FEEDBACK:**
+- When an idea is vague or underdeveloped, suggest using CTA, TCA, or CBA to strengthen it
+- In "howToRevise" field, recommend which framework would work best for that specific idea
+- In paragraph "improvements" array, show concrete examples using these frameworks
+- Help students see HOW to develop ideas logically, not just WHAT to add
+
 PARAGRAPH ANALYSIS - SIMPLIFIED ACTIONABLE FEEDBACK:
 
 **CRITICAL: PARAGRAPH ANALYSIS SCOPE**
@@ -1189,6 +1223,40 @@ Conclusion (1-2 sentences):
 - If conclusion is missing, this is a CRITICAL TR issue (automatic Band 5.5 or below)
 - If body paragraphs lack clear topic sentences or development, note as TR/CC issues
 - If conclusion introduces new ideas, note this as a TR issue
+
+REASONING FRAMEWORKS TO STRENGTHEN IDEAS (Task Response):
+
+When suggesting improvements to underdeveloped ideas, guide students to use these reasoning frameworks:
+
+**1. CTA – Characteristic-Based Argument**
+**When to use:** Explaining behaviors, trends, or phenomena that happen due to inherent human traits or natural characteristics.
+**How it works:** Connect the topic to human nature, innate needs, or natural tendencies.
+**Example:**
+Topic: "Nowadays, many people spend hours on social networks. Does this have a positive or negative impact?"
+CTA Application: "One of the main reasons why many people spend too much time on social media is that human nature always wants to connect with others. From ancient times, humans have had the need to communicate and update information about their surroundings. Nowadays, social networks are simply a new tool to satisfy this innate need, which makes many people spend a lot of time browsing their phones."
+**Key elements:** Human nature → innate need → modern manifestation
+
+**2. TCA – Time-Based Contrast Argument**
+**When to use:** Showing how something has changed over time (past vs. present).
+**How it works:** Contrast past situations with current reality to show cause-effect relationships.
+**Example:**
+Topic: "Many people assume that modern life makes people lonelier than before. Do you agree?"
+TCA Application: "Previously, families would gather together after a day's work, sharing stories together over cozy meals. However, today, the advancement of technology has changed this habit. Many people spend most of their time browsing their phones or computers, leading to a lack of social interaction and increased feelings of loneliness."
+**Key elements:** Past situation → Present change → Consequence
+
+**3. CBA – Context-Based Argument**
+**When to use:** Making ideas more realistic, local, or relatable with real-life situations or cultural context.
+**How it works:** Add specific cultural or local context to make arguments more practical and convincing.
+**Example:**
+Topic: "Kids these days spend too much time on their phones. Is this harmful or not?"
+CBA Application: "In Vietnam, many parents tend to give their children their phones when they want their children to sit still in a place to eat or when their parents are busy. However, excessive exposure to screens at an early age can negatively impact a child's intellectual development and communication skills."
+**Key elements:** Specific context (location/culture) → Common practice → Impact
+
+**APPLYING FRAMEWORKS IN FEEDBACK:**
+- When an idea is vague or underdeveloped, suggest using CTA, TCA, or CBA to strengthen it
+- In "howToRevise" field, recommend which framework would work best for that specific idea
+- In paragraph "improvements" array, show concrete examples using these frameworks
+- Help students see HOW to develop ideas logically, not just WHAT to add
 
 PARAGRAPH ANALYSIS - SIMPLIFIED ACTIONABLE FEEDBACK:
 
