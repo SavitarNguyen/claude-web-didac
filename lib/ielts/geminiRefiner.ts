@@ -114,27 +114,43 @@ WRONG EXAMPLE:
 "howToRevise": "Sau khi nêu ra vấn đề, hãy thêm một hoặc hai câu giải thích hậu quả cụ thể. Ví dụ: 'Khi không thể luyện tập giao tiếp, học sinh sẽ gặp khó khăn trong việc trình bày ý kiến...'"
 (This is WRONG - the quoted sentence should be in English!)
 
-CORRECTIONS APPROACH FOR INTERMEDIATE STUDENTS:
+CORRECTIONS APPROACH FOR INTERMEDIATE STUDENTS (Band 5.5-6.5):
 When creating correctedSentence, revisedParagraph, and vocabulary suggestions:
-1. **USE INTERMEDIATE-ADVANCED VOCABULARY** (Band 6-7 level):
-   - You can use: significant, facilitate, enhance, individuals, contemporary, substantial
-   - Suggest more sophisticated academic vocabulary to help them reach Band 7.0+
 
-2. **USE MORE COMPLEX GRAMMAR STRUCTURES**:
-   - Can use: Perfect tenses, passive voice, relative clauses, conditional sentences
-   - Suggest varied sentence structures and sophisticated linking words
+1. **USE NATURAL, COMMON ACADEMIC VOCABULARY** (Band 6-7 level):
+   - Keep tone NATURAL, ACADEMIC, and EASY TO UNDERSTAND
+   - Use common, accurate vocabulary - NOT advanced or C2 words
+   - ✅ Use: affordable, accessible, expenses, learners, backgrounds, advantages, disadvantages, opportunities, challenges, develop, provide, support, improve, reduce
+   - ❌ Avoid: facilitate, enhance, individuals, contemporary, substantial, engender, ameliorate, mitigate, proliferate
+   - Example target style: "With online courses, students do not need to pay for such expenses. As a result, education becomes more affordable and accessible to learners from all social backgrounds."
 
-3. **DEVELOP SOPHISTICATED IDEAS**:
-   - Encourage nuanced arguments, abstract thinking, complex cause-effect relationships
-   - Push for deeper analysis and more developed reasoning
+2. **USE CORRECT BUT SIMPLE GRAMMAR STRUCTURES**:
+   - Use: Simple and perfect tenses, basic passive voice, relative clauses, conditional sentences
+   - Focus on CORRECT grammar, not complex or sophisticated structures
+   - Linking words: As a result, Therefore, However, Although, Because, For example, In addition
+   - Keep sentences clear and straightforward
 
-4. **VOCABULARY SUGGESTIONS - ACADEMIC LEVEL**:
-   - Suggest Band 6-8 academic vocabulary
-   - Help students upgrade from basic to sophisticated language
+3. **FOCUS ON FULL DEVELOPMENT OF IDEAS** (Task Response):
+   - Encourage complete explanations with clear cause-effect relationships
+   - Add concrete examples and specific details
+   - Develop each point thoroughly but naturally
+   - Example: Don't just say "technology is important" - explain which technology and why it matters specifically
 
-5. **TARGET HIGHER BAND IMPROVEMENT**:
+4. **ENSURE CLEAR LOGICAL FLOW** (Coherence & Cohesion):
+   - Use natural transitions between ideas
+   - Make connections explicit with linking phrases
+   - Organize ideas in a logical, easy-to-follow sequence
+   - Example: "Because of these high costs... As a result... This means that..."
+
+5. **USE NATURAL COLLOCATIONS** (Lexical Resource):
+   - Suggest common, natural word combinations that native speakers use
+   - ✅ Examples: pay for expenses, social backgrounds, affordable and accessible, future careers, practical skills, real-world situations
+   - ❌ Avoid: overly sophisticated or academic collocations that sound unnatural
+
+6. **TARGET REALISTIC BAND IMPROVEMENT**:
    - Aim for Band 5.5-6.5 → 7.0-7.5 improvements
-   - Use more advanced vocabulary and grammar appropriate for Band 7+
+   - Use natural Band 6-7 vocabulary and grammar
+   - Do NOT use Band 8-9 sophisticated language - keep it natural and clear
 
 FOCUS:
 - Analyze all aspects: Task Response, Coherence & Cohesion, Lexical Resource, and Grammatical Range & Accuracy
