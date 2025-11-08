@@ -455,6 +455,43 @@ Conclusion (1-2 sentences):
 - If body paragraphs lack clear topic sentences or development, note as TR/CC issues
 - If conclusion introduces new ideas, note this as a TR issue
 
+**CRITICAL SCORING PENALTIES - TASK RESPONSE:**
+
+1. **INTRODUCTION FAILURES → Maximum TR = 6.0:**
+   If the introduction fails to paraphrase/mention the essay topic AND lacks clarity about the writer's position:
+   - Missing topic paraphrase = TR cannot exceed Band 6.0
+   - Unclear or missing thesis statement = TR cannot exceed Band 6.0
+   - Example of Band 6.0 introduction: "Nowadays technology is very popular. I think it has both good and bad sides."
+     (Fails to specify WHICH aspect of technology, too vague)
+
+2. **UNDERDEVELOPED OR OFF-TOPIC PARAGRAPHS → Maximum TR & CC = 5.0:**
+   If a body paragraph is severely underdeveloped (1-3 sentences only) OR goes off-topic/unrelated to the main argument:
+   - Only 1-3 sentences without proper development = TR & CC cannot exceed Band 5.0
+   - Lists reasons/ideas without explanation or examples = TR & CC cannot exceed Band 5.0
+   - Goes off-topic or unrelated to the essay question = TR & CC cannot exceed Band 5.0
+
+   **Example of Band 5.0 paragraph (severely underdeveloped):**
+   "On the other hand, people still like to read printed books due to poor internet access and lack of trust on online platform, because numerous websites spreading misinformation and to prevent themselves from being victim of those sites."
+
+   **Issues:**
+   - Only ONE sentence (no development)
+   - Lists multiple reasons but doesn't explain ANY of them
+   - No examples, no cause-effect explanation, no elaboration
+   - Reader cannot understand HOW poor internet access affects book preference
+   - Reader cannot understand WHY misinformation relates to preferring printed books
+
+   **What's needed for Band 6.0+:**
+   - Minimum 4-5 sentences per paragraph
+   - Each supporting idea must be explained with cause-effect or concrete examples
+   - Clear connection between supporting points and main argument
+
+**WHEN PROVIDING FEEDBACK:**
+- If introduction lacks topic paraphrase or clear position, explicitly state: "Maximum TR score: 6.0 due to unclear introduction"
+- If any body paragraph has ≤3 sentences, explicitly state: "Maximum TR & CC score: 5.0 due to severe underdevelopment"
+- If paragraph goes off-topic, explicitly state: "Maximum TR & CC score: 5.0 due to irrelevant content"
+- Mark these as CRITICAL issues in red boxes
+- In overallBand calculation, respect these score ceilings
+
 REASONING FRAMEWORKS TO STRENGTHEN IDEAS (Task Response):
 
 When suggesting improvements to underdeveloped ideas, guide students to use these reasoning frameworks:
@@ -1223,6 +1260,43 @@ Conclusion (1-2 sentences):
 - If conclusion is missing, this is a CRITICAL TR issue (automatic Band 5.5 or below)
 - If body paragraphs lack clear topic sentences or development, note as TR/CC issues
 - If conclusion introduces new ideas, note this as a TR issue
+
+**CRITICAL SCORING PENALTIES - TASK RESPONSE:**
+
+1. **INTRODUCTION FAILURES → Maximum TR = 6.0:**
+   If the introduction fails to paraphrase/mention the essay topic AND lacks clarity about the writer's position:
+   - Missing topic paraphrase = TR cannot exceed Band 6.0
+   - Unclear or missing thesis statement = TR cannot exceed Band 6.0
+   - Example of Band 6.0 introduction: "Nowadays technology is very popular. I think it has both good and bad sides."
+     (Fails to specify WHICH aspect of technology, too vague)
+
+2. **UNDERDEVELOPED OR OFF-TOPIC PARAGRAPHS → Maximum TR & CC = 5.0:**
+   If a body paragraph is severely underdeveloped (1-3 sentences only) OR goes off-topic/unrelated to the main argument:
+   - Only 1-3 sentences without proper development = TR & CC cannot exceed Band 5.0
+   - Lists reasons/ideas without explanation or examples = TR & CC cannot exceed Band 5.0
+   - Goes off-topic or unrelated to the essay question = TR & CC cannot exceed Band 5.0
+
+   **Example of Band 5.0 paragraph (severely underdeveloped):**
+   "On the other hand, people still like to read printed books due to poor internet access and lack of trust on online platform, because numerous websites spreading misinformation and to prevent themselves from being victim of those sites."
+
+   **Issues:**
+   - Only ONE sentence (no development)
+   - Lists multiple reasons but doesn't explain ANY of them
+   - No examples, no cause-effect explanation, no elaboration
+   - Reader cannot understand HOW poor internet access affects book preference
+   - Reader cannot understand WHY misinformation relates to preferring printed books
+
+   **What's needed for Band 6.0+:**
+   - Minimum 4-5 sentences per paragraph
+   - Each supporting idea must be explained with cause-effect or concrete examples
+   - Clear connection between supporting points and main argument
+
+**WHEN PROVIDING FEEDBACK:**
+- If introduction lacks topic paraphrase or clear position, explicitly state: "Maximum TR score: 6.0 due to unclear introduction"
+- If any body paragraph has ≤3 sentences, explicitly state: "Maximum TR & CC score: 5.0 due to severe underdevelopment"
+- If paragraph goes off-topic, explicitly state: "Maximum TR & CC score: 5.0 due to irrelevant content"
+- Mark these as CRITICAL issues in red boxes
+- In overallBand calculation, respect these score ceilings
 
 REASONING FRAMEWORKS TO STRENGTHEN IDEAS (Task Response):
 
