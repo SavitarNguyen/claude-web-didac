@@ -41,6 +41,17 @@ CRITICAL LANGUAGE INSTRUCTIONS:
 - "text" and "revisedParagraph" in paragraphs (the actual essay content)
 - All essay content, corrections, and alternative phrasings
 
+⚠️ CRITICAL - QUOTED SENTENCES WITHIN VIETNAMESE EXPLANATIONS:
+When you write Vietnamese explanations in "howToRevise", "explanation", or other feedback fields,
+any QUOTED EXAMPLE SENTENCES (in single quotes '') must be in ENGLISH, not Vietnamese.
+
+CORRECT EXAMPLE:
+"howToRevise": "Sau khi nêu ra vấn đề, hãy thêm một hoặc hai câu giải thích hậu quả cụ thể. Ví dụ: 'When students cannot practice communication, they will struggle with presenting ideas, negotiating, or working in teams, which is very important for their future careers.'"
+
+WRONG EXAMPLE:
+"howToRevise": "Sau khi nêu ra vấn đề, hãy thêm một hoặc hai câu giải thích hậu quả cụ thể. Ví dụ: 'Khi không thể luyện tập giao tiếp, học sinh sẽ gặp khó khăn trong việc trình bày ý kiến...'"
+(This is WRONG - the quoted sentence should be in English!)
+
 CRITICAL: SIMPLIFY CORRECTIONS FOR BEGINNERS
 When creating correctedSentence, revisedParagraph, and vocabulary suggestions:
 1. **USE BASIC VOCABULARY ONLY** (Band 5-6 level):
@@ -91,6 +102,17 @@ CRITICAL LANGUAGE INSTRUCTIONS:
 - "current" and "suggestion" in paragraph improvements (the actual improvement text)
 - "text" and "revisedParagraph" in paragraphs (the actual essay content)
 - All essay content, corrections, and alternative phrasings
+
+⚠️ CRITICAL - QUOTED SENTENCES WITHIN VIETNAMESE EXPLANATIONS:
+When you write Vietnamese explanations in "howToRevise", "explanation", or other feedback fields,
+any QUOTED EXAMPLE SENTENCES (in single quotes '') must be in ENGLISH, not Vietnamese.
+
+CORRECT EXAMPLE:
+"howToRevise": "Sau khi nêu ra vấn đề, hãy thêm một hoặc hai câu giải thích hậu quả cụ thể. Ví dụ: 'When students cannot practice communication, they will struggle with presenting ideas, negotiating, or working in teams, which is very important for their future careers.'"
+
+WRONG EXAMPLE:
+"howToRevise": "Sau khi nêu ra vấn đề, hãy thêm một hoặc hai câu giải thích hậu quả cụ thể. Ví dụ: 'Khi không thể luyện tập giao tiếp, học sinh sẽ gặp khó khăn trong việc trình bày ý kiến...'"
+(This is WRONG - the quoted sentence should be in English!)
 
 CORRECTIONS APPROACH FOR INTERMEDIATE STUDENTS:
 When creating correctedSentence, revisedParagraph, and vocabulary suggestions:
@@ -145,7 +167,10 @@ FOCUS AREAS: Full comprehensive analysis (all IELTS criteria)
 
 CRITICAL LANGUAGE INSTRUCTIONS:
 ✅ MUST be in Vietnamese: feedback, issue, explanation, howToRevise, strengths, improvements (overall summary), fullReport
-❌ MUST remain in English: originalSentence, correctedSentence, original/revised words, suggestion in vocabSuggestions, current/suggestion in paragraph improvements, revisedParagraph, essay content`;
+❌ MUST remain in English: originalSentence, correctedSentence, original/revised words, suggestion in vocabSuggestions, current/suggestion in paragraph improvements, revisedParagraph, essay content
+
+⚠️ CRITICAL: Any QUOTED EXAMPLE SENTENCES (in single quotes '') within Vietnamese explanations must be in ENGLISH.
+Example: "Ví dụ: 'This is the example sentence in English.'" NOT "Ví dụ: 'Đây là câu ví dụ bằng tiếng Việt.'"`;
   }
 }
 
