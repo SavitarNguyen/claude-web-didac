@@ -26,19 +26,20 @@ FOCUS AREAS: Basic vocabulary, basic grammar, and fundamental ideas only
 
 CRITICAL LANGUAGE INSTRUCTIONS:
 ✅ MUST be in Vietnamese (Tiếng Việt):
-- "feedback" field (band score explanations)
-- "issue" field (problem descriptions)
-- "explanation" field (why something is wrong)
+- "feedback" field in bandScores (band score explanations)
+- "issue" field in errors and paragraph issues (problem descriptions)
+- "explanation" field in errors, vocabSuggestions, and paragraph improvements (why something is wrong/why it helps)
 - "howToRevise" field (how to fix it)
-- "strengths" and "improvements" arrays
+- "strengths" and "improvements" arrays (overall summary)
 - "fullReport" field
 
 ❌ MUST remain in English:
-- "originalSentence" (the student's essay sentences)
-- "correctedSentence" (the corrected versions)
+- "originalSentence" and "correctedSentence" (the actual essay sentences)
 - "original" and "revised" in wordCorrections (the actual words/phrases)
-- "suggestion" in vocabSuggestions (the actual vocabulary words)
+- "suggestion" in vocabSuggestions (the actual vocabulary word alternatives)
+- "current" and "suggestion" in paragraph improvements (the actual improvement text)
 - "text" and "revisedParagraph" in paragraphs (the actual essay content)
+- All essay content, corrections, and alternative phrasings
 
 FOCUS:
 - Focus on BASIC errors: simple grammar mistakes, common vocabulary errors, basic sentence structure
@@ -54,19 +55,20 @@ FOCUS AREAS: Full comprehensive analysis (all IELTS criteria)
 
 CRITICAL LANGUAGE INSTRUCTIONS:
 ✅ MUST be in Vietnamese (Tiếng Việt):
-- "feedback" field (band score explanations)
-- "issue" field (problem descriptions)
-- "explanation" field (why something is wrong)
+- "feedback" field in bandScores (band score explanations)
+- "issue" field in errors and paragraph issues (problem descriptions)
+- "explanation" field in errors, vocabSuggestions, and paragraph improvements (why something is wrong/why it helps)
 - "howToRevise" field (how to fix it)
-- "strengths" and "improvements" arrays
+- "strengths" and "improvements" arrays (overall summary)
 - "fullReport" field
 
 ❌ MUST remain in English:
-- "originalSentence" (the student's essay sentences)
-- "correctedSentence" (the corrected versions)
+- "originalSentence" and "correctedSentence" (the actual essay sentences)
 - "original" and "revised" in wordCorrections (the actual words/phrases)
-- "suggestion" in vocabSuggestions (the actual vocabulary words)
+- "suggestion" in vocabSuggestions (the actual vocabulary word alternatives)
+- "current" and "suggestion" in paragraph improvements (the actual improvement text)
 - "text" and "revisedParagraph" in paragraphs (the actual essay content)
+- All essay content, corrections, and alternative phrasings
 
 FOCUS:
 - Analyze all aspects: Task Response, Coherence & Cohesion, Lexical Resource, and Grammatical Range & Accuracy
@@ -98,8 +100,8 @@ FEEDBACK LANGUAGE: Vietnamese (Tiếng Việt) for explanations ONLY
 FOCUS AREAS: Full comprehensive analysis (all IELTS criteria)
 
 CRITICAL LANGUAGE INSTRUCTIONS:
-✅ MUST be in Vietnamese: feedback, issue, explanation, howToRevise, strengths, improvements, fullReport
-❌ MUST remain in English: originalSentence, correctedSentence, original/revised words, vocabulary suggestions, essay content`;
+✅ MUST be in Vietnamese: feedback, issue, explanation, howToRevise, strengths, improvements (overall summary), fullReport
+❌ MUST remain in English: originalSentence, correctedSentence, original/revised words, suggestion in vocabSuggestions, current/suggestion in paragraph improvements, revisedParagraph, essay content`;
   }
 }
 
