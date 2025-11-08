@@ -21,24 +21,145 @@ function getLevelInstructions(level?: '5.0_or_below' | '5.5_to_6.5' | '7.0_or_ab
     case '5.0_or_below':
       return `
 STUDENT LEVEL: 5.0 or below (Beginner)
-FEEDBACK LANGUAGE: Vietnamese (Tiếng Việt)
+FEEDBACK LANGUAGE: Vietnamese (Tiếng Việt) for explanations ONLY
 FOCUS AREAS: Basic vocabulary, basic grammar, and fundamental ideas only
+CRITICAL LANGUAGE INSTRUCTIONS:
+✅ MUST be in Vietnamese (Tiếng Việt):
+- "feedback" field in bandScores (band score explanations)
+- "issue" field in errors and paragraph issues (problem descriptions)
+- "explanation" field in errors, vocabSuggestions, and paragraph improvements (why something is wrong/why it helps)
+- "howToRevise" field (how to fix it)
+- "strengths" and "improvements" arrays (overall summary)
+- "fullReport" field
 
-IMPORTANT:
-- ALL feedback fields (feedback, issue, explanation, howToRevise, etc.) MUST be in Vietnamese
+❌ MUST remain in English:
+- "originalSentence" and "correctedSentence" (the actual essay sentences)
+- "original" and "revised" in wordCorrections (the actual words/phrases)
+- "suggestion" in vocabSuggestions (the actual vocabulary word alternatives)
+- "current" and "suggestion" in paragraph improvements (the actual improvement text)
+- "text" and "revisedParagraph" in paragraphs (the actual essay content)
+- All essay content, corrections, and alternative phrasings
+
+⚠️ CRITICAL - QUOTED SENTENCES WITHIN VIETNAMESE EXPLANATIONS:
+When you write Vietnamese explanations in "howToRevise", "explanation", or other feedback fields,
+any QUOTED EXAMPLE SENTENCES (in single quotes '') must be in ENGLISH, not Vietnamese.
+
+CORRECT EXAMPLE:
+"howToRevise": "Sau khi nêu ra vấn đề, hãy thêm một hoặc hai câu giải thích hậu quả cụ thể. Ví dụ: 'When students cannot practice communication, they will struggle with presenting ideas, negotiating, or working in teams, which is very important for their future careers.'"
+
+WRONG EXAMPLE:
+"howToRevise": "Sau khi nêu ra vấn đề, hãy thêm một hoặc hai câu giải thích hậu quả cụ thể. Ví dụ: 'Khi không thể luyện tập giao tiếp, học sinh sẽ gặp khó khăn trong việc trình bày ý kiến...'"
+(This is WRONG - the quoted sentence should be in English!)
+
+CRITICAL: SIMPLIFY CORRECTIONS FOR BEGINNERS
+When creating correctedSentence, revisedParagraph, and vocabulary suggestions:
+1. **USE BASIC VOCABULARY ONLY** (Band 5-6 level):
+   ✅ Use: important, help, use, make, people, problem, solution, good, bad
+   ❌ Avoid: crucial, facilitate, utilize, engender, individuals, dilemma, remedy, beneficial, detrimental
+
+2. **USE SIMPLE GRAMMAR STRUCTURES**:
+   ✅ Use: Simple present/past tense, basic connectors (and, but, because, so)
+   ❌ Avoid: Perfect tenses, passive voice, complex conditionals, sophisticated linking words
+
+3. **KEEP IDEAS SIMPLE AND CONCRETE**:
+   ✅ Use: Specific examples, everyday situations, clear cause-effect
+   ❌ Avoid: Abstract concepts, complex reasoning, sophisticated arguments
+
+4. **VOCABULARY SUGGESTIONS - BASIC ONLY**:
+   - Suggest common Band 5-6 words, not Band 7-8 academic vocabulary
+   - Example: suggest "difficult" instead of "challenging", not "arduous"
+
+5. **TARGET REALISTIC BAND IMPROVEMENT**:
+   - Aim for Band 5.0 → 5.5-6.0 improvements
+   - Do NOT use Band 7+ vocabulary or grammar in corrections
+
+
+FOCUS:
 - Focus on BASIC errors: simple grammar mistakes, common vocabulary errors, basic sentence structure
-- Keep explanations SIMPLE and easy to understand
+- Keep explanations SIMPLE and easy to understand in Vietnamese
 - Avoid complex grammatical terminology - use simple Vietnamese explanations
 - Prioritize the most fundamental improvements that will help students reach Band 5.5-6.0`;
 
     case '5.5_to_6.5':
       return `
 STUDENT LEVEL: 5.5 - 6.5 (Intermediate)
-FEEDBACK LANGUAGE: Vietnamese (Tiếng Việt)
+FEEDBACK LANGUAGE: Vietnamese (Tiếng Việt) for explanations ONLY
 FOCUS AREAS: Full comprehensive analysis (all IELTS criteria)
+CRITICAL LANGUAGE INSTRUCTIONS:
+✅ MUST be in Vietnamese (Tiếng Việt):
+- "feedback" field in bandScores (band score explanations)
+- "issue" field in errors and paragraph issues (problem descriptions)
+- "explanation" field in errors, vocabSuggestions, and paragraph improvements (why something is wrong/why it helps)
+- "howToRevise" field (how to fix it)
+- "strengths" and "improvements" arrays (overall summary)
+- "fullReport" field
 
-IMPORTANT:
-- ALL feedback fields (feedback, issue, explanation, howToRevise, etc.) MUST be in Vietnamese
+❌ MUST remain in English:
+- "originalSentence" and "correctedSentence" (the actual essay sentences)
+- "original" and "revised" in wordCorrections (the actual words/phrases)
+- "suggestion" in vocabSuggestions (the actual vocabulary word alternatives)
+- "current" and "suggestion" in paragraph improvements (the actual improvement text)
+- "text" and "revisedParagraph" in paragraphs (the actual essay content)
+- All essay content, corrections, and alternative phrasings
+
+⚠️ CRITICAL - QUOTED SENTENCES WITHIN VIETNAMESE EXPLANATIONS:
+When you write Vietnamese explanations in "howToRevise", "explanation", or other feedback fields,
+any QUOTED EXAMPLE SENTENCES (in single quotes '') must be in ENGLISH, not Vietnamese.
+
+CORRECT EXAMPLE:
+"howToRevise": "Sau khi nêu ra vấn đề, hãy thêm một hoặc hai câu giải thích hậu quả cụ thể. Ví dụ: 'When students cannot practice communication, they will struggle with presenting ideas, negotiating, or working in teams, which is very important for their future careers.'"
+
+WRONG EXAMPLE:
+"howToRevise": "Sau khi nêu ra vấn đề, hãy thêm một hoặc hai câu giải thích hậu quả cụ thể. Ví dụ: 'Khi không thể luyện tập giao tiếp, học sinh sẽ gặp khó khăn trong việc trình bày ý kiến...'"
+(This is WRONG - the quoted sentence should be in English!)
+
+CORRECTIONS APPROACH FOR INTERMEDIATE STUDENTS (Band 5.5-6.5):
+
+When creating correctedSentence, revisedParagraph, and vocabulary suggestions:
+
+1. **USE NATURAL, COMMON ACADEMIC VOCABULARY** (Band 6-7 level):
+   - Keep tone NATURAL, ACADEMIC, and EASY TO UNDERSTAND
+   - Use common, accurate vocabulary - NOT advanced or C2 words
+   - ✅ Use: affordable, accessible, expenses, learners, backgrounds, advantages, disadvantages, opportunities, challenges, develop, provide, support, improve, reduce, facilitate, enhance, individuals, substantial, contemporary
+   - ❌ Avoid: engender, ameliorate, proliferate
+
+   - Example target style: "With online courses, students do not need to pay for such expenses. As a result, education becomes more affordable and accessible to learners from all social backgrounds."
+ 
+
+2. **USE CORRECT BUT SIMPLE GRAMMAR STRUCTURES**:
+   - Use: Simple and perfect tenses, basic passive voice, relative clauses, conditional sentences
+   - Focus on CORRECT grammar, not complex or sophisticated structures
+   - Linking words: As a result, Therefore, However, Although, Because, For example, In addition
+   - Keep sentences clear and straightforward
+
+ 
+
+3. **FOCUS ON FULL DEVELOPMENT OF IDEAS** (Task Response):
+   - Encourage complete explanations with clear cause-effect relationships
+   - Add concrete examples and specific details
+   - Develop each point thoroughly but naturally
+   - Example: Don't just say "technology is important" - explain which technology and why it matters specifically
+
+4. **ENSURE CLEAR LOGICAL FLOW** (Coherence & Cohesion):
+   - Use natural transitions between ideas
+   - Make connections explicit with linking phrases
+   - Organize ideas in a logical, easy-to-follow sequence
+   - Example: "Because of these high costs... As a result... This means that..."
+
+
+5. **USE NATURAL COLLOCATIONS** (Lexical Resource):
+   - Suggest common, natural word combinations that native speakers use
+   - ✅ Examples: pay for expenses, social backgrounds, affordable and accessible, future careers, practical skills, real-world situations
+   - ❌ Avoid: overly sophisticated or academic collocations that sound unnatural
+
+ 
+
+6. **TARGET REALISTIC BAND IMPROVEMENT**:
+   - Aim for Band 5.5-6.5 → 7.0-7.5 improvements
+   - Use natural Band 6-7 vocabulary and grammar
+   - Do NOT use Band 8-9 sophisticated language - keep it natural and clear
+
+FOCUS:
 - Analyze all aspects: Task Response, Coherence & Cohesion, Lexical Resource, and Grammatical Range & Accuracy
 - Provide detailed, comprehensive feedback to help students reach Band 7.0+
 - Use clear Vietnamese explanations with appropriate IELTS terminology`;
@@ -274,8 +395,93 @@ TECHNICAL REQUIREMENTS:
 5. Evidence quotes must be verbatim from essay
 6. Analyze each paragraph for TA & CC compliance
 
-PARAGRAPH ANALYSIS - SIMPLIFIED ACTIONABLE FEEDBACK:
+IELTS ESSAY STRUCTURE GUIDELINES:
+**INTRODUCTION REQUIREMENTS:**
+- Should contain 2 sentences:
+  1️⃣ Sentence 1: Paraphrase the essay question
+  2️⃣ Sentence 2: Thesis statement - give a clear, direct answer or position to the question
+- Length: 40-60 words
+- ❌ DO NOT add a "hook" or general opening sentence (not part of IELTS marking criteria)
+- ❌ DO NOT add background information or context
 
+- Focus on clarity and directness, not decoration
+- Example: "Some people believe that online education is more beneficial than traditional classroom learning. I completely disagree with this view because face-to-face interaction is essential for effective learning."
+
+**CONCLUSION REQUIREMENTS - CRITICAL:**
+- A conclusion is MANDATORY in IELTS Writing Task 2
+- Missing conclusion = Task Response penalty (TR drops below Band 6.0 automatically)
+- Task Response accounts for 25% of the total score
+- Write 1-2 sentences only:
+  ✅ Summarize your key points briefly
+  ✅ Restate your position clearly (for opinion/discussion essays)
+  ❌ DO NOT introduce new ideas or examples
+  ❌ DO NOT add recommendations unless the question asks for them
+- Use clear conclusion linkers naturally: "In conclusion", "To sum up", "Overall", "As a result"
+- Example: "In conclusion, although online courses offer flexibility, traditional classroom education provides essential interpersonal skills that cannot be replaced by digital learning."
+
+ 
+
+**SUGGESTED BODY PARAGRAPH STRUCTURE:**
+Each body paragraph should follow this pattern (guide, not rigid rule):
+1. Topic sentence: Clear main idea that directly addresses the question
+2. Supporting idea 1: Explanation | Cause-Effect | Concrete Example
+3. Supporting idea 2: Explanation | Cause-Effect | Concrete Example
+4. Each idea should be fully developed with specific details
+
+ 
+**WHEN ANALYZING ESSAYS:**
+- If introduction has more/fewer than 2 sentences, note this as a TR issue
+- If conclusion is missing, this is a CRITICAL TR issue (automatic Band 5.5 or below)
+- If body paragraphs lack clear topic sentences or development, note as TR/CC issues
+- If conclusion introduces new ideas, note this as a TR issue
+
+REASONING FRAMEWORKS TO STRENGTHEN IDEAS (Task Response):
+When suggesting improvements to underdeveloped ideas, guide students to use these reasoning frameworks:
+  **1. CTA – Characteristic-Based Argument**
+
+**When to use:** Explaining behaviors, trends, or phenomena that happen due to inherent human traits or natural characteristics.
+
+**How it works:** Connect the topic to human nature, innate needs, or natural tendencies.
+
+**Example:**
+
+Topic: "Nowadays, many people spend hours on social networks. Does this have a positive or negative impact?"
+
+CTA Application: "One of the main reasons why many people spend too much time on social media is that human nature always wants to connect with others. From ancient times, humans have had the need to communicate and update information about their surroundings. Nowadays, social networks are simply a new tool to satisfy this innate need, which makes many people spend a lot of time browsing their phones."
+
+**Key elements:** Human nature → innate need → modern manifestation
+
+
+  **2. TCA – Time-Based Contrast Argument**
+
+**When to use:** Showing how something has changed over time (past vs. present).
+
+**How it works:** Contrast past situations with current reality to show cause-effect relationships.
+
+**Example:**
+
+Topic: "Many people assume that modern life makes people lonelier than before. Do you agree?"
+
+TCA Application: "Previously, families would gather together after a day's work, sharing stories together over cozy meals. However, today, the advancement of technology has changed this habit. Many people spend most of their time browsing their phones or computers, leading to a lack of social interaction and increased feelings of loneliness."
+
+**Key elements:** Past situation → Present change → Consequence
+
+
+  **3. CBA – Context-Based Argument**
+**When to use:** Making ideas more realistic, local, or relatable with real-life situations or cultural context.
+**How it works:** Add specific cultural or local context to make arguments more practical and convincing.
+**Example:**
+Topic: "Kids these days spend too much time on their phones. Is this harmful or not?"
+CBA Application: "In Vietnam, many parents tend to give their children their phones when they want their children to sit still in a place to eat or when their parents are busy. However, excessive exposure to screens at an early age can negatively impact a child's intellectual development and communication skills."
+**Key elements:** Specific context (location/culture) → Common practice → Impact
+
+**APPLYING FRAMEWORKS IN FEEDBACK:**
+- When an idea is vague or underdeveloped, suggest using CTA, TCA, or CBA to strengthen it
+- In "howToRevise" field, recommend which framework would work best for that specific idea
+- In paragraph "improvements" array, show concrete examples using these frameworks
+- Help students see HOW to develop ideas logically, not just WHAT to add
+
+PARAGRAPH ANALYSIS - SIMPLIFIED ACTIONABLE FEEDBACK:
 **CRITICAL: PARAGRAPH ANALYSIS SCOPE**
 Paragraph analysis focuses ONLY on TR (Task Response) and CC (Coherence & Cohesion) issues.
 **DO NOT include grammar or vocabulary issues in paragraph analysis** - these belong in sentence-level feedback only.
@@ -944,6 +1150,92 @@ TECHNICAL REQUIREMENTS:
 5. Evidence quotes must be verbatim from essay
 6. Analyze each paragraph for TA & CC compliance
 
+IELTS ESSAY STRUCTURE GUIDELINES:
+**INTRODUCTION REQUIREMENTS:**
+- Should contain 2 sentences:
+  1️⃣ Sentence 1: Paraphrase the essay question
+  2️⃣ Sentence 2: Thesis statement - give a clear, direct answer or position to the question
+- Length: 40-60 words
+- ❌ DO NOT add a "hook" or general opening sentence (not part of IELTS marking criteria)
+- ❌ DO NOT add background information or context
+
+- Focus on clarity and directness, not decoration
+- Example: "Some people believe that online education is more beneficial than traditional classroom learning. I completely disagree with this view because face-to-face interaction is essential for effective learning."
+
+**CONCLUSION REQUIREMENTS - CRITICAL:**
+- A conclusion is MANDATORY in IELTS Writing Task 2
+- Missing conclusion = Task Response penalty (TR drops below Band 6.0 automatically)
+- Task Response accounts for 25% of the total score
+- Write 1-2 sentences only:
+  ✅ Summarize your key points briefly
+  ✅ Restate your position clearly (for opinion/discussion essays)
+  ❌ DO NOT introduce new ideas or examples
+  ❌ DO NOT add recommendations unless the question asks for them
+- Use clear conclusion linkers naturally: "In conclusion", "To sum up", "Overall", "As a result"
+- Example: "In conclusion, although online courses offer flexibility, traditional classroom education provides essential interpersonal skills that cannot be replaced by digital learning."
+
+
+
+**SUGGESTED BODY PARAGRAPH STRUCTURE:**
+Each body paragraph should follow this pattern (guide, not rigid rule):
+1. Topic sentence: Clear main idea that directly addresses the question
+2. Supporting idea 1: Explanation | Cause-Effect | Concrete Example
+3. Supporting idea 2: Explanation | Cause-Effect | Concrete Example
+4. Each idea should be fully developed with specific details
+
+
+**WHEN ANALYZING ESSAYS:**
+- If introduction has more/fewer than 2 sentences, note this as a TR issue
+- If conclusion is missing, this is a CRITICAL TR issue (automatic Band 5.5 or below)
+- If body paragraphs lack clear topic sentences or development, note as TR/CC issues
+- If conclusion introduces new ideas, note this as a TR issue
+
+REASONING FRAMEWORKS TO STRENGTHEN IDEAS (Task Response):
+When suggesting improvements to underdeveloped ideas, guide students to use these reasoning frameworks:
+  **1. CTA – Characteristic-Based Argument**
+
+**When to use:** Explaining behaviors, trends, or phenomena that happen due to inherent human traits or natural characteristics.
+
+**How it works:** Connect the topic to human nature, innate needs, or natural tendencies.
+
+**Example:**
+
+Topic: "Nowadays, many people spend hours on social networks. Does this have a positive or negative impact?"
+
+CTA Application: "One of the main reasons why many people spend too much time on social media is that human nature always wants to connect with others. From ancient times, humans have had the need to communicate and update information about their surroundings. Nowadays, social networks are simply a new tool to satisfy this innate need, which makes many people spend a lot of time browsing their phones."
+
+**Key elements:** Human nature → innate need → modern manifestation
+
+
+  **2. TCA – Time-Based Contrast Argument**
+
+**When to use:** Showing how something has changed over time (past vs. present).
+
+**How it works:** Contrast past situations with current reality to show cause-effect relationships.
+
+**Example:**
+
+Topic: "Many people assume that modern life makes people lonelier than before. Do you agree?"
+
+TCA Application: "Previously, families would gather together after a day's work, sharing stories together over cozy meals. However, today, the advancement of technology has changed this habit. Many people spend most of their time browsing their phones or computers, leading to a lack of social interaction and increased feelings of loneliness."
+
+**Key elements:** Past situation → Present change → Consequence
+
+
+  **3. CBA – Context-Based Argument**
+**When to use:** Making ideas more realistic, local, or relatable with real-life situations or cultural context.
+**How it works:** Add specific cultural or local context to make arguments more practical and convincing.
+**Example:**
+Topic: "Kids these days spend too much time on their phones. Is this harmful or not?"
+CBA Application: "In Vietnam, many parents tend to give their children their phones when they want their children to sit still in a place to eat or when their parents are busy. However, excessive exposure to screens at an early age can negatively impact a child's intellectual development and communication skills."
+**Key elements:** Specific context (location/culture) → Common practice → Impact
+
+**APPLYING FRAMEWORKS IN FEEDBACK:**
+- When an idea is vague or underdeveloped, suggest using CTA, TCA, or CBA to strengthen it
+- In "howToRevise" field, recommend which framework would work best for that specific idea
+- In paragraph "improvements" array, show concrete examples using these frameworks
+- Help students see HOW to develop ideas logically, not just WHAT to add
+
 PARAGRAPH ANALYSIS - SIMPLIFIED ACTIONABLE FEEDBACK:
 
 **CRITICAL: PARAGRAPH ANALYSIS SCOPE**
@@ -955,14 +1247,21 @@ For EACH paragraph, provide:
 **1. revisedParagraph Field (CONSERVATIVE IDEA-FOCUSED revision)**
 Generate a CONSERVATIVE, REALISTIC revised version that:
 - **MATCH STUDENT'S BAND LEVEL** - Realistic improvements (e.g., Band 6 → 6.5-7, NOT Band 6 → Band 9)
-- **PRESERVE VOCABULARY AND GRAMMAR EXACTLY** - Use student's exact wording and grammatical style, but you must fix basic grammar and vocabulary mistakes
-- DO NOT fix grammar errors, DO NOT replace vocabulary, DO NOT correct spelling/punctuation
+- **PRESERVE VOCABULARY AND GRAMMAR EXACTLY** - Use student's exact wording and grammatical style
+- **CRITICAL: DO NOT FIX GRAMMAR/VOCABULARY ERRORS** - Grammar and vocabulary corrections belong in sentence-level feedback ONLY
+- **ONLY FIX IDEAS AND COHERENCE** - Replace vague sentences with clearer ideas, add development to underdeveloped points
+- Keep all sentences that are grammatically acceptable EXACTLY as the student wrote them (even if they have minor grammar errors)
+
+ 
 
 **CRITICAL: Two types of changes in revisedParagraph:**
+**TYPE 1 - REPLACE weak/vague sentences (from "issues" array - TR/CC ISSUES ONLY):**
+- If a sentence has a TR/CC issue (vague idea, poor coherence), COMPLETELY REMOVE that sentence
+- REPLACE it with an improved version that addresses the IDEA or COHERENCE issue
+- Use vocabulary and grammar similar to the student's level (0.5-1.0 band level improvement)
+- The purpose is to upgrade students' IDEAS and REASONING, NOT grammar/vocabulary
 
-**TYPE 1 - REPLACE weak/vague sentences (from "issues" array):**
-- If a sentence has a TR/CC issue (quote in "issues" array), COMPLETELY REMOVE that sentence
-- REPLACE it with an improved version that addresses the issue (with vocab and grammar similar to the student's level. Do NOT use much more advanced vocab and grammar - only 0.5-1.0 band level, as the main purpose is to upgrade students' ideas and reasoning)
+- DO NOT fix grammar errors in the replacement - keep student-level grammar
 - DO NOT keep the original sentence and add improvements - ONLY show the improved replacement
 - The diff will show: original sentence with red strikethrough → improved sentence in yellow highlight
 
@@ -976,9 +1275,16 @@ Generate a CONSERVATIVE, REALISTIC revised version that:
 
 **TYPE 2 - ADD development sentences (from "improvements" array):**
 - If a sentence is acceptable but could be developed further (in "improvements" array)
-- KEEP that sentence EXACTLY as-is (word-for-word, no changes)
+- KEEP that sentence EXACTLY as-is (word-for-word, NO changes whatsoever)
+- DO NOT fix grammar, vocabulary, or spelling in this sentence - keep it identical to the original
 - ADD the suggested development sentences AFTER it
 - The diff will show: original kept as-is → new sentences in yellow highlight
+
+ 
+**CRITICAL: If a sentence has NO TR/CC issues, keep it VERBATIM in revisedParagraph**
+- Even if it has minor grammar errors (these are fixed in sentence-level feedback)
+- Even if vocabulary could be upgraded (this is suggested in sentence-level feedback)
+- Only change sentences that have IDEA or COHERENCE problems
 
 **Example:**
 - Original: "Social media connects people."

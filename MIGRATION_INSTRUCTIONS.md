@@ -1,44 +1,51 @@
-# Database Migration Instructions
+# Fix Essay Access Issue - Migration Instructions
 
-## Add corrected_content column to essays table
+## Problem
+Students cannot see their corrected essays because the `essays` table is missing Row Level Security (RLS) policies.
 
-To enable the essay history and corrected essay functionality, you need to add a new column to the `essays` table in your Supabase database.
+## Solution
+Apply the SQL migration to add RLS policies to the essays table.
+
+---
+
+## Apply via Supabase Dashboard (2 minutes)
 
 ### Steps:
 
-1. Go to your Supabase Dashboard: https://supabase.com/dashboard
-2. Select your project: **fpomqateqebxypbjabch** (cute-vocab-lms)
-3. Navigate to the **SQL Editor** (in the left sidebar)
-4. Click **New Query**
-5. Paste the following SQL:
+1. **Open Supabase SQL Editor**
+   - Go to: https://supabase.com/dashboard/project/fpomqateqebxypbjabch/sql/new
 
-```sql
--- Add corrected_content column to essays table to store the corrected version of the essay
-ALTER TABLE public.essays
-ADD COLUMN IF NOT EXISTS corrected_content TEXT;
+2. **Copy the Migration SQL**
+   - Open the file: `scripts/apply-migrations-simple.sql`
+   - Select all and copy
 
--- Add comment to explain the column
-COMMENT ON COLUMN public.essays.corrected_content IS 'Stores the corrected/revised version of the essay after IELTS analysis';
-```
+3. **Paste and Execute**
+   - Paste into the SQL Editor
+   - Click "Run"
 
-6. Click **Run** to execute the migration
-7. Verify the column was added by going to **Table Editor** > **essays** and checking for the new `corrected_content` column
+4. **Verify Success**
+   - You should see "Success. No rows returned"
+   - Check Table Editor → essays → Policies tab
+   - Should see 4 new policies
 
-### Verification
+5. **Test**
+   - Refresh http://localhost:3000/ielts-essay/my-essays
+   - Log in as a student
+   - Essays should now be visible!
 
-You can verify the migration was successful by running this query:
+---
 
-```sql
-SELECT column_name, data_type, is_nullable
-FROM information_schema.columns
-WHERE table_name = 'essays' AND column_name = 'corrected_content';
-```
+## What This Migration Does
 
-You should see one row returned with the column details.
+✅ Adds `corrected_content` column
+✅ Adds `level` column  
+✅ Enables Row Level Security
+✅ Creates 4 RLS policies for student access
+✅ Grants proper permissions
 
-## What this enables:
+---
 
-- Saving both original and corrected essay versions to the database
-- Viewing essay history at `/my-essays`
-- Side-by-side comparison of original and corrected versions
-- Better tracking of student progress over time
+**Files Created:**
+- `supabase/migrations/20250114000000_add_rls_policies_to_essays.sql`
+- `scripts/apply-migrations-simple.sql` (use this one)
+- `scripts/fix-essay-rls.js`

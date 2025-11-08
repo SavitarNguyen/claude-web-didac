@@ -13,7 +13,7 @@ interface RequestJSON {
 
 export async function POST(request: Request) {
   const body: RequestJSON = await request.json();
-  const { text, instructionNames, stream = true, apiKey: userApiKey, level } = body;
+  const { text, instructionNames, stream = false, apiKey: userApiKey, level } = body;
 
   if (!text) {
     return NextResponse.json({ error: "No text provided" });
