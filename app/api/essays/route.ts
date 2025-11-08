@@ -33,38 +33,12 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 })
     }
 
-    const { title, content } = await request.json()
-
-    // In a real app, this would call Deepseek AI for analysis
-    // For now, we'll simulate AI feedback
-    const score = Math.floor(Math.random() * 30) + 70 // Random score between 70-100
-
-    const feedback = {
-      grammar: [
-        "Good use of complex sentences",
-        "Watch for subject-verb agreement in paragraph 3",
-        "Consider using more varied punctuation",
-      ],
-      vocabulary: [
-        "Strong vocabulary choices overall",
-        "Consider replacing 'good' with more specific adjectives",
-        "The word 'utilize' is used repeatedly - try alternatives",
-      ],
-      structure: [
-        "Clear introduction and conclusion",
-        "Paragraph transitions could be smoother",
-        "Main argument is well-supported with evidence",
-      ],
-      suggestions: [
-        "Expand on your third point with an additional example",
-        "Consider addressing potential counterarguments",
-        "The conclusion could more strongly tie back to your thesis",
-      ],
-    }
+    const { title, content, correctedContent, score, feedback } = await request.json()
 
     const result = await createEssay({
       title,
       content,
+      correctedContent,
       score,
       feedback,
       userId: session.user.id as string,
@@ -79,6 +53,7 @@ export async function POST(request: Request) {
         _id: result.insertedId,
         title,
         content,
+        correctedContent,
         score,
         feedback,
         userId: session.user.id,

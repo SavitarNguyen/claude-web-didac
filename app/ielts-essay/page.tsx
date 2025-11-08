@@ -1,0 +1,816 @@
+"use client"
+
+import { useState, useEffect, useCallback, useRef } from "react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Textarea } from "@/components/ui/textarea"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Send, Loader2, Save, BookOpen, Plus } from "lucide-react"
+import { useSession } from "next-auth/react"
+import { useToast } from "@/hooks/use-toast"
+import { FullScreenFeedbackView } from "@/components/ielts/FullScreenFeedbackView"
+import { Progress } from "@/components/ui/progress"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog"
+import type { IELTSFeedback } from "@/lib/types/ielts"
+
+interface Topic {
+  id: string
+  name: string
+  description: string
+}
+
+interface Prompt {
+  id: string
+  topic_id: string
+  title: string
+  description: string
+}
+
+interface VocabSuggestion {
+  id: string
+  prompt_id: string
+  content: string
+  suggestion_type: string
+}
+
+export default function IELTSEssayPage() {
+  const { data: session } = useSession()
+  const { toast } = useToast()
+  const [essayText, setEssayText] = useState("")
+  const [essayTitle, setEssayTitle] = useState("")
+  const [isAnalyzing, setIsAnalyzing] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
+  const [feedback, setFeedback] = useState<IELTSFeedback | null>(null)
+  const [streamingText, setStreamingText] = useState("")
+  const [showFeedback, setShowFeedback] = useState(false)
+  const [progress, setProgress] = useState(0)
+  const [statusMessage, setStatusMessage] = useState("")
+
+  // Topic selector state
+  const [topics, setTopics] = useState<Topic[]>([])
+  const [selectedTopicId, setSelectedTopicId] = useState<string>("")
+  const [prompts, setPrompts] = useState<Prompt[]>([])
+  const [selectedPromptId, setSelectedPromptId] = useState<string>("")
+  const [vocabSuggestions, setVocabSuggestions] = useState<VocabSuggestion[]>([])
+
+  // Draft auto-save
+  const autoSaveTimerRef = useRef<NodeJS.Timeout | null>(null)
+  const [currentDraftId, setCurrentDraftId] = useState<string | null>(null)
+
+  // Admin topic/prompt creation
+  const [showAddTopicDialog, setShowAddTopicDialog] = useState(false)
+  const [showAddPromptDialog, setShowAddPromptDialog] = useState(false)
+  const [newTopicName, setNewTopicName] = useState("")
+  const [newTopicDescription, setNewTopicDescription] = useState("")
+  const [newPromptTitle, setNewPromptTitle] = useState("")
+  const [newPromptDescription, setNewPromptDescription] = useState("")
+  const [isCreating, setIsCreating] = useState(false)
+
+  // Check if user is admin
+  const isAdmin = session?.user?.role === "admin"
+
+  // Load topics on mount
+  useEffect(() => {
+    const loadTopics = async () => {
+      try {
+        const response = await fetch("/api/essay-topics")
+        const data = await response.json()
+
+        // Handle error response
+        if (data.error || !Array.isArray(data)) {
+          console.error("Error loading topics:", data.error || "Invalid response")
+          setTopics([])
+          return
+        }
+
+        setTopics(data)
+      } catch (error) {
+        console.error("Error loading topics:", error)
+        setTopics([])
+      }
+    }
+    loadTopics()
+  }, [])
+
+  // Load prompts when topic changes
+  useEffect(() => {
+    if (!selectedTopicId) {
+      setPrompts([])
+      setSelectedPromptId("")
+      return
+    }
+
+    const loadPrompts = async () => {
+      try {
+        const response = await fetch(`/api/essay-prompts?topic_id=${selectedTopicId}`)
+        const data = await response.json()
+        setPrompts(data)
+      } catch (error) {
+        console.error("Error loading prompts:", error)
+      }
+    }
+    loadPrompts()
+  }, [selectedTopicId])
+
+  // Load vocab suggestions when prompt changes
+  useEffect(() => {
+    if (!selectedPromptId) {
+      setVocabSuggestions([])
+      return
+    }
+
+    const loadVocab = async () => {
+      try {
+        const response = await fetch(`/api/essay-vocab?prompt_id=${selectedPromptId}`)
+        const data = await response.json()
+        setVocabSuggestions(data)
+      } catch (error) {
+        console.error("Error loading vocab suggestions:", error)
+      }
+    }
+    loadVocab()
+  }, [selectedPromptId])
+
+  // Auto-save draft every 5 minutes
+  const saveDraft = useCallback(async () => {
+    if (!session || !essayText.trim()) return
+
+    setIsSaving(true)
+    try {
+      const response = await fetch("/api/essay-drafts", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          topic_id: selectedTopicId || null,
+          prompt_id: selectedPromptId || null,
+          title: essayTitle || "Untitled Draft",
+          content: essayText,
+          parent_draft_id: currentDraftId,
+        }),
+      })
+
+      const data = await response.json()
+      setCurrentDraftId(data.id)
+
+      toast({
+        title: "Draft saved",
+        description: "Your essay has been saved automatically",
+      })
+    } catch (error) {
+      console.error("Error saving draft:", error)
+    } finally {
+      setIsSaving(false)
+    }
+  }, [session, essayText, essayTitle, selectedTopicId, selectedPromptId, currentDraftId, toast])
+
+  // Set up auto-save timer
+  useEffect(() => {
+    if (!session || !essayText.trim()) return
+
+    // Clear existing timer
+    if (autoSaveTimerRef.current) {
+      clearTimeout(autoSaveTimerRef.current)
+    }
+
+    // Set new timer for 5 minutes
+    autoSaveTimerRef.current = setTimeout(() => {
+      saveDraft()
+    }, 5 * 60 * 1000) // 5 minutes
+
+    return () => {
+      if (autoSaveTimerRef.current) {
+        clearTimeout(autoSaveTimerRef.current)
+      }
+    }
+  }, [essayText, session, saveDraft])
+
+  const handleSubmit = async () => {
+    if (!essayText.trim()) {
+      toast({
+        title: "Error",
+        description: "Please write your essay before submitting",
+        variant: "destructive",
+      })
+      return
+    }
+
+    setIsAnalyzing(true)
+    setFeedback(null)
+    setStreamingText("")
+    setProgress(0)
+    setStatusMessage("Preparing essay...")
+
+    try {
+      setProgress(25)
+      setStatusMessage("Checking GR/LR...")
+
+      const response = await fetch("/api/ielts/refine", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          text: essayText,
+          instructionNames: ["ielts"],
+          stream: true,
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to get IELTS feedback")
+      }
+
+      setProgress(50)
+      setStatusMessage("Checking TA/CC...")
+
+      const reader = response.body?.getReader()
+      const decoder = new TextDecoder()
+
+      if (!reader) {
+        throw new Error("No response reader available")
+      }
+
+      let accumulatedText = ""
+
+      while (true) {
+        const { done, value } = await reader.read()
+
+        if (done) break
+
+        const chunk = decoder.decode(value)
+        const lines = chunk.split("\n")
+
+        for (const line of lines) {
+          if (line.startsWith("data: ")) {
+            const data = line.slice(6)
+
+            if (data === "[DONE]") {
+              setProgress(75)
+              setStatusMessage("Finalizing feedback...")
+
+              // Parsing complete
+              try {
+                const parsedFeedback: IELTSFeedback = JSON.parse(accumulatedText)
+                setFeedback(parsedFeedback)
+                setShowFeedback(true)
+
+                setProgress(100)
+                setStatusMessage("Complete!")
+
+                // Save to database if user is logged in
+                if (session) {
+                  // Extract corrected content from paragraph revisions
+                  const correctedContent = parsedFeedback.paragraphs
+                    .map((p) => p.revisedParagraph)
+                    .join("\n\n")
+
+                  await fetch("/api/essays", {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                      title: essayTitle || "Untitled IELTS Essay",
+                      content: essayText,
+                      correctedContent,
+                      score: parsedFeedback.overallBand,
+                      feedback: parsedFeedback,
+                    }),
+                  })
+                }
+
+                toast({
+                  title: "Success",
+                  description: session
+                    ? "Your essay has been graded and saved"
+                    : "Your essay has been graded. Sign in to save your progress.",
+                })
+              } catch (parseError) {
+                console.error("Parse error:", parseError)
+                toast({
+                  title: "Error",
+                  description: "Failed to parse feedback",
+                  variant: "destructive",
+                })
+              }
+              continue
+            }
+
+            try {
+              const parsed = JSON.parse(data)
+              if (parsed.chunk) {
+                accumulatedText += parsed.chunk
+                setStreamingText(accumulatedText)
+              }
+              if (parsed.error) {
+                throw new Error(parsed.error)
+              }
+            } catch (e) {
+              console.error("Chunk parse error:", e)
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.error("Error getting IELTS feedback:", error)
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to analyze essay",
+        variant: "destructive",
+      })
+    } finally {
+      setIsAnalyzing(false)
+      setStreamingText("")
+    }
+  }
+
+  const handleDownload = () => {
+    // Implement download functionality
+    console.log("Download feedback")
+  }
+
+  const handleCreateTopic = async () => {
+    if (!newTopicName.trim()) {
+      toast({
+        title: "Error",
+        description: "Topic name is required",
+        variant: "destructive",
+      })
+      return
+    }
+
+    setIsCreating(true)
+    try {
+      const response = await fetch("/api/essay-topics", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: newTopicName,
+          description: newTopicDescription,
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to create topic")
+      }
+
+      const newTopic = await response.json()
+      setTopics([...topics, newTopic].sort((a, b) => a.name.localeCompare(b.name)))
+      setSelectedTopicId(newTopic.id)
+      setShowAddTopicDialog(false)
+      setNewTopicName("")
+      setNewTopicDescription("")
+
+      toast({
+        title: "Success",
+        description: "Topic created successfully",
+      })
+    } catch (error) {
+      console.error("Error creating topic:", error)
+      toast({
+        title: "Error",
+        description: "Failed to create topic",
+        variant: "destructive",
+      })
+    } finally {
+      setIsCreating(false)
+    }
+  }
+
+  const handleCreatePrompt = async () => {
+    if (!newPromptTitle.trim()) {
+      toast({
+        title: "Error",
+        description: "Prompt title is required",
+        variant: "destructive",
+      })
+      return
+    }
+
+    if (!selectedTopicId) {
+      toast({
+        title: "Error",
+        description: "Please select a topic first",
+        variant: "destructive",
+      })
+      return
+    }
+
+    setIsCreating(true)
+    try {
+      const response = await fetch("/api/essay-prompts", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          topic_id: selectedTopicId,
+          title: newPromptTitle,
+          description: newPromptDescription,
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to create prompt")
+      }
+
+      const newPrompt = await response.json()
+      setPrompts([...prompts, newPrompt].sort((a, b) => a.title.localeCompare(b.title)))
+      setSelectedPromptId(newPrompt.id)
+      setShowAddPromptDialog(false)
+      setNewPromptTitle("")
+      setNewPromptDescription("")
+
+      toast({
+        title: "Success",
+        description: "Prompt created successfully",
+      })
+    } catch (error) {
+      console.error("Error creating prompt:", error)
+      toast({
+        title: "Error",
+        description: "Failed to create prompt",
+        variant: "destructive",
+      })
+    } finally {
+      setIsCreating(false)
+    }
+  }
+
+  return (
+    <>
+      {showFeedback && feedback && (
+        <FullScreenFeedbackView
+          feedback={feedback}
+          onClose={() => setShowFeedback(false)}
+          onDownload={handleDownload}
+          isLoading={isAnalyzing}
+        />
+      )}
+
+      {!showFeedback && (
+        <div className="container py-8 max-w-7xl">
+          <div className="flex flex-col gap-4 mb-8">
+            <div>
+              <h1 className="text-4xl font-bold tracking-tight">IELTS Essay Correction</h1>
+              <p className="text-muted-foreground mt-2">
+                Get comprehensive IELTS Task 2 feedback with band scores, detailed corrections, and improvement suggestions
+              </p>
+            </div>
+          </div>
+
+          <div className="grid gap-6 lg:grid-cols-2">
+        {/* Left Column - Essay Input */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Your Essay</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="title">Essay Title (Optional)</Label>
+              <Input
+                id="title"
+                placeholder="e.g., Technology and Education"
+                value={essayTitle}
+                onChange={(e) => setEssayTitle(e.target.value)}
+                disabled={isAnalyzing}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="essay">Essay Content *</Label>
+              <Textarea
+                id="essay"
+                placeholder="Write your IELTS Task 2 essay here (minimum 250 words recommended)..."
+                value={essayText}
+                onChange={(e) => setEssayText(e.target.value)}
+                disabled={isAnalyzing}
+                className="min-h-[400px] font-mono text-sm"
+              />
+              <p className="text-xs text-muted-foreground">
+                Word count: {essayText.trim().split(/\s+/).filter(Boolean).length}
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              {session && (
+                <Button
+                  onClick={saveDraft}
+                  disabled={isSaving || !essayText.trim()}
+                  className="w-full"
+                  variant="outline"
+                  size="lg"
+                >
+                  {isSaving ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Saving Draft...
+                    </>
+                  ) : (
+                    <>
+                      <Save className="mr-2 h-4 w-4" />
+                      Save Draft
+                    </>
+                  )}
+                </Button>
+              )}
+
+              <Button
+                onClick={handleSubmit}
+                disabled={isAnalyzing || !essayText.trim()}
+                className="w-full"
+                size="lg"
+              >
+                {isAnalyzing ? (
+                  <div className="w-full space-y-2">
+                    <div className="flex items-center justify-center">
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      <span>{statusMessage}</span>
+                    </div>
+                    <Progress value={progress} className="h-2" />
+                  </div>
+                ) : (
+                  <>
+                    <Send className="mr-2 h-4 w-4" />
+                    Submit for Grading
+                  </>
+                )}
+              </Button>
+            </div>
+
+            {!session && (
+              <p className="text-xs text-center text-muted-foreground">
+                Sign in to save drafts and track progress
+              </p>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Right Column - Topic Selector */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <BookOpen className="h-5 w-5" />
+              Essay Topics & Resources
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="topic">Select Topic</Label>
+              <Select
+                value={selectedTopicId}
+                onValueChange={(value) => {
+                  if (value === "__add_new__") {
+                    setShowAddTopicDialog(true)
+                  } else {
+                    setSelectedTopicId(value)
+                  }
+                }}
+              >
+                <SelectTrigger id="topic">
+                  <SelectValue placeholder="Choose a topic..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {topics.map((topic) => (
+                    <SelectItem key={topic.id} value={topic.id}>
+                      {topic.name}
+                    </SelectItem>
+                  ))}
+                  {isAdmin && (
+                    <SelectItem value="__add_new__" className="text-primary font-medium">
+                      <div className="flex items-center">
+                        <Plus className="h-4 w-4 mr-2" />
+                        Add New Topic
+                      </div>
+                    </SelectItem>
+                  )}
+                </SelectContent>
+              </Select>
+              {selectedTopicId && (
+                <p className="text-xs text-muted-foreground">
+                  {topics.find((t) => t.id === selectedTopicId)?.description}
+                </p>
+              )}
+            </div>
+
+            {selectedTopicId && (
+              <div className="space-y-2">
+                <Label htmlFor="prompt">Essay Prompt</Label>
+                <Select
+                  value={selectedPromptId}
+                  onValueChange={(value) => {
+                    if (value === "__add_new__") {
+                      setShowAddPromptDialog(true)
+                    } else {
+                      setSelectedPromptId(value)
+                    }
+                  }}
+                >
+                  <SelectTrigger id="prompt">
+                    <SelectValue placeholder="Choose a prompt..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="general">General Topical Vocab/Grammar Structures</SelectItem>
+                    {prompts.map((prompt) => (
+                      <SelectItem key={prompt.id} value={prompt.id}>
+                        {prompt.title}
+                      </SelectItem>
+                    ))}
+                    {isAdmin && (
+                      <SelectItem value="__add_new__" className="text-primary font-medium">
+                        <div className="flex items-center">
+                          <Plus className="h-4 w-4 mr-2" />
+                          Add New Prompt
+                        </div>
+                      </SelectItem>
+                    )}
+                  </SelectContent>
+                </Select>
+                {selectedPromptId && selectedPromptId !== "general" && (
+                  <p className="text-xs text-muted-foreground">
+                    {prompts.find((p) => p.id === selectedPromptId)?.description}
+                  </p>
+                )}
+              </div>
+            )}
+
+            {selectedPromptId && vocabSuggestions.length > 0 && (
+              <div className="space-y-2">
+                <Label>Vocabulary & Grammar Suggestions</Label>
+                <div className="rounded-lg border p-4 max-h-[300px] overflow-y-auto">
+                  <div className="space-y-3">
+                    {vocabSuggestions.map((suggestion) => (
+                      <div key={suggestion.id} className="text-sm">
+                        <div className="font-medium text-primary capitalize">
+                          {suggestion.suggestion_type}
+                        </div>
+                        <div className="text-muted-foreground mt-1 whitespace-pre-wrap">
+                          {suggestion.content}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {selectedPromptId === "general" && (
+              <div className="rounded-lg border p-4">
+                <p className="text-sm text-muted-foreground">
+                  General vocabulary and grammar structures for this topic will be displayed here.
+                  Administrators can add these in the admin panel.
+                </p>
+              </div>
+            )}
+
+            {!selectedTopicId && (
+              <div className="flex flex-col items-center justify-center py-8 text-center">
+                <BookOpen className="h-12 w-12 text-muted-foreground mb-3" />
+                <p className="text-muted-foreground text-sm">
+                  Select a topic to see essay prompts and vocabulary suggestions
+                </p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+        </div>
+      )}
+
+      {/* Add Topic Dialog */}
+      <Dialog open={showAddTopicDialog} onOpenChange={setShowAddTopicDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Add New Topic</DialogTitle>
+            <DialogDescription>
+              Create a new essay topic for students to explore
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="topic-name">Topic Name *</Label>
+              <Input
+                id="topic-name"
+                placeholder="e.g., Technology"
+                value={newTopicName}
+                onChange={(e) => setNewTopicName(e.target.value)}
+                disabled={isCreating}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="topic-description">Description</Label>
+              <Textarea
+                id="topic-description"
+                placeholder="Brief description of this topic..."
+                value={newTopicDescription}
+                onChange={(e) => setNewTopicDescription(e.target.value)}
+                disabled={isCreating}
+                className="min-h-[100px]"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowAddTopicDialog(false)
+                setNewTopicName("")
+                setNewTopicDescription("")
+              }}
+              disabled={isCreating}
+            >
+              Cancel
+            </Button>
+            <Button onClick={handleCreateTopic} disabled={isCreating || !newTopicName.trim()}>
+              {isCreating ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Creating...
+                </>
+              ) : (
+                "Create Topic"
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Add Prompt Dialog */}
+      <Dialog open={showAddPromptDialog} onOpenChange={setShowAddPromptDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Add New Prompt</DialogTitle>
+            <DialogDescription>
+              Create a new essay prompt for the selected topic
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="prompt-title">Prompt Title *</Label>
+              <Input
+                id="prompt-title"
+                placeholder="e.g., Impact of Social Media"
+                value={newPromptTitle}
+                onChange={(e) => setNewPromptTitle(e.target.value)}
+                disabled={isCreating}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="prompt-description">Prompt Description</Label>
+              <Textarea
+                id="prompt-description"
+                placeholder="Detailed essay prompt or question..."
+                value={newPromptDescription}
+                onChange={(e) => setNewPromptDescription(e.target.value)}
+                disabled={isCreating}
+                className="min-h-[150px]"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowAddPromptDialog(false)
+                setNewPromptTitle("")
+                setNewPromptDescription("")
+              }}
+              disabled={isCreating}
+            >
+              Cancel
+            </Button>
+            <Button onClick={handleCreatePrompt} disabled={isCreating || !newPromptTitle.trim()}>
+              {isCreating ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Creating...
+                </>
+              ) : (
+                "Create Prompt"
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
+  )
+}
