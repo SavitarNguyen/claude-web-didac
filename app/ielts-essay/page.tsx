@@ -220,7 +220,7 @@ export default function IELTSEssayPage() {
 
     try {
       setProgress(25)
-      setStatusMessage("Checking GR/LR...")
+      setStatusMessage("Analyzing essay...")
 
       const response = await fetch("/api/ielts/refine", {
         method: "POST",
@@ -230,7 +230,6 @@ export default function IELTSEssayPage() {
         body: JSON.stringify({
           text: essayText,
           instructionNames: ["ielts"],
-          stream: true,
           level: selectedLevel,
         }),
       })
@@ -240,96 +239,58 @@ export default function IELTSEssayPage() {
       }
 
       setProgress(50)
-      setStatusMessage("Checking TA/CC...")
+      setStatusMessage("Processing feedback...")
 
-      const reader = response.body?.getReader()
-      const decoder = new TextDecoder()
+      const data = await response.json()
 
-      if (!reader) {
-        throw new Error("No response reader available")
-      }
+      setProgress(75)
+      setStatusMessage("Finalizing feedback...")
 
-      let accumulatedText = ""
+      // Parse the feedback
+      try {
+        const parsedFeedback: IELTSFeedback = JSON.parse(data.refined)
+        setFeedback(parsedFeedback)
+        setShowFeedback(true)
 
-      while (true) {
-        const { done, value } = await reader.read()
+        setProgress(100)
+        setStatusMessage("Complete!")
 
-        if (done) break
+        // Save to database if user is logged in
+        if (session) {
+          // Extract corrected content from paragraph revisions
+          const correctedContent = parsedFeedback.paragraphs
+            .map((p) => p.revisedParagraph)
+            .join("\n\n")
 
-        const chunk = decoder.decode(value)
-        const lines = chunk.split("\n")
-
-        for (const line of lines) {
-          if (line.startsWith("data: ")) {
-            const data = line.slice(6)
-
-            if (data === "[DONE]") {
-              setProgress(75)
-              setStatusMessage("Finalizing feedback...")
-
-              // Parsing complete
-              try {
-                const parsedFeedback: IELTSFeedback = JSON.parse(accumulatedText)
-                setFeedback(parsedFeedback)
-                setShowFeedback(true)
-
-                setProgress(100)
-                setStatusMessage("Complete!")
-
-                // Save to database if user is logged in
-                if (session) {
-                  // Extract corrected content from paragraph revisions
-                  const correctedContent = parsedFeedback.paragraphs
-                    .map((p) => p.revisedParagraph)
-                    .join("\n\n")
-
-                  await fetch("/api/essays", {
-                    method: "POST",
-                    headers: {
-                      "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                      title: essayTitle || "Untitled IELTS Essay",
-                      content: essayText,
-                      correctedContent,
-                      score: parsedFeedback.overallBand,
-                      feedback: parsedFeedback,
-                      level: selectedLevel,
-                    }),
-                  })
-                }
-
-                toast({
-                  title: "Success",
-                  description: session
-                    ? "Your essay has been graded and saved"
-                    : "Your essay has been graded. Sign in to save your progress.",
-                })
-              } catch (parseError) {
-                console.error("Parse error:", parseError)
-                toast({
-                  title: "Error",
-                  description: "Failed to parse feedback",
-                  variant: "destructive",
-                })
-              }
-              continue
-            }
-
-            try {
-              const parsed = JSON.parse(data)
-              if (parsed.chunk) {
-                accumulatedText += parsed.chunk
-                setStreamingText(accumulatedText)
-              }
-              if (parsed.error) {
-                throw new Error(parsed.error)
-              }
-            } catch (e) {
-              console.error("Chunk parse error:", e)
-            }
-          }
+          await fetch("/api/essays", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              title: essayTitle || "Untitled IELTS Essay",
+              content: essayText,
+              correctedContent,
+              score: parsedFeedback.overallBand,
+              feedback: parsedFeedback,
+              level: selectedLevel,
+            }),
+          })
         }
+
+        toast({
+          title: "Success",
+          description: session
+            ? "Your essay has been graded and saved"
+            : "Your essay has been graded. Sign in to save your progress.",
+        })
+      } catch (parseError) {
+        console.error("Parse error:", parseError)
+        toast({
+          title: "Error",
+          description: "Failed to parse feedback",
+          variant: "destructive",
+        })
       }
     } catch (error) {
       console.error("Error getting IELTS feedback:", error)
