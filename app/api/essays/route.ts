@@ -33,7 +33,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 })
     }
 
-    const { title, content, correctedContent, score, feedback } = await request.json()
+    const { title, content, correctedContent, score, feedback, level } = await request.json()
 
     const result = await createEssay({
       title,
@@ -41,6 +41,7 @@ export async function POST(request: Request) {
       correctedContent,
       score,
       feedback,
+      level,
       userId: session.user.id as string,
       isFlagged: false,
     })
@@ -56,6 +57,7 @@ export async function POST(request: Request) {
         correctedContent,
         score,
         feedback,
+        level,
         userId: session.user.id,
         isFlagged: false,
       },

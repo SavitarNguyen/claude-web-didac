@@ -15,17 +15,67 @@ if (!apiKey) {
 
 const genAI = new GoogleGenerativeAI(apiKey);
 
+// Helper function to generate level-specific feedback instructions
+function getLevelInstructions(level?: '5.0_or_below' | '5.5_to_6.5' | '7.0_or_above'): string {
+  switch (level) {
+    case '5.0_or_below':
+      return `
+STUDENT LEVEL: 5.0 or below (Beginner)
+FEEDBACK LANGUAGE: Vietnamese (Tiếng Việt)
+FOCUS AREAS: Basic vocabulary, basic grammar, and fundamental ideas only
+
+IMPORTANT:
+- ALL feedback fields (feedback, issue, explanation, howToRevise, etc.) MUST be in Vietnamese
+- Focus on BASIC errors: simple grammar mistakes, common vocabulary errors, basic sentence structure
+- Keep explanations SIMPLE and easy to understand
+- Avoid complex grammatical terminology - use simple Vietnamese explanations
+- Prioritize the most fundamental improvements that will help students reach Band 5.5-6.0`;
+
+    case '5.5_to_6.5':
+      return `
+STUDENT LEVEL: 5.5 - 6.5 (Intermediate)
+FEEDBACK LANGUAGE: Vietnamese (Tiếng Việt)
+FOCUS AREAS: Full comprehensive analysis (all IELTS criteria)
+
+IMPORTANT:
+- ALL feedback fields (feedback, issue, explanation, howToRevise, etc.) MUST be in Vietnamese
+- Analyze all aspects: Task Response, Coherence & Cohesion, Lexical Resource, and Grammatical Range & Accuracy
+- Provide detailed, comprehensive feedback to help students reach Band 7.0+
+- Use clear Vietnamese explanations with appropriate IELTS terminology`;
+
+    case '7.0_or_above':
+      return `
+STUDENT LEVEL: 7.0 or above (Advanced)
+FEEDBACK LANGUAGE: English
+FOCUS AREAS: Full comprehensive analysis with advanced insights
+
+IMPORTANT:
+- ALL feedback fields (feedback, issue, explanation, howToRevise, etc.) MUST be in English
+- Analyze all aspects with high-level insights and nuanced observations
+- Focus on subtle improvements that will help students reach Band 8.0+
+- Provide sophisticated feedback with advanced IELTS assessment criteria`;
+
+    default:
+      return `
+STUDENT LEVEL: 5.5 - 6.5 (Intermediate - Default)
+FEEDBACK LANGUAGE: Vietnamese (Tiếng Việt)
+FOCUS AREAS: Full comprehensive analysis (all IELTS criteria)`;
+  }
+}
+
 export async function geminiRefineText(
   text: string,
-  instructions: Instruction[]
+  instructions: Instruction[],
+  languageName?: string,
+  level?: '5.0_or_below' | '5.5_to_6.5' | '7.0_or_above'
 ): Promise<string> {
-  const languageName = guessLanguage(text);
-  
+  const detectedLanguage = languageName || guessLanguage(text);
+
   // Check if IELTS feedback mode is enabled
   const hasIeltsInstruction = instructions.some(inst => inst.name === "ielts");
-  
+
   if (hasIeltsInstruction) {
-    return handleIELTSModeInteractive(text, instructions, languageName);
+    return handleIELTSModeInteractive(text, instructions, detectedLanguage, level);
   }
   
   // Regular Gemini refinement
@@ -74,9 +124,12 @@ Detailed Feedback with Inline Edits. Instructions:
 async function handleIELTSModeInteractive(
   text: string,
   instructions: Instruction[],
-  languageName: string | undefined
+  languageName: string | undefined,
+  level?: '5.0_or_below' | '5.5_to_6.5' | '7.0_or_above'
 ): Promise<string> {
   const ieltsPrompt = `You are an expert IELTS Writing Task 2 examiner. Return a JSON object with comprehensive sentence-level feedback.
+
+${getLevelInstructions(level)}
 
 CRITICAL INSTRUCTIONS:
 1. Your response MUST be ONLY valid, complete JSON - no markdown, no explanations, no truncation
@@ -678,15 +731,17 @@ function formatInstructions(instructions: Instruction[]): string {
 // Streaming version of geminiRefineText for better UX
 export async function* geminiRefineTextStream(
   text: string,
-  instructions: Instruction[]
+  instructions: Instruction[],
+  languageName?: string,
+  level?: '5.0_or_below' | '5.5_to_6.5' | '7.0_or_above'
 ): AsyncGenerator<string, void, unknown> {
-  const languageName = guessLanguage(text);
+  const detectedLanguage = languageName || guessLanguage(text);
 
   // Check if IELTS feedback mode is enabled
   const hasIeltsInstruction = instructions.some(inst => inst.name === "ielts");
 
   if (hasIeltsInstruction) {
-    yield* handleIELTSModeInteractiveStream(text, instructions, languageName);
+    yield* handleIELTSModeInteractiveStream(text, instructions, detectedLanguage, level);
     return;
   }
 
@@ -739,9 +794,12 @@ Detailed Feedback with Inline Edits. Instructions:
 async function* handleIELTSModeInteractiveStream(
   text: string,
   instructions: Instruction[],
-  languageName: string | undefined
+  languageName: string | undefined,
+  level?: '5.0_or_below' | '5.5_to_6.5' | '7.0_or_above'
 ): AsyncGenerator<string, void, unknown> {
   const ieltsPrompt = `You are an expert IELTS Writing Task 2 examiner. Return a JSON object with comprehensive sentence-level feedback.
+
+${getLevelInstructions(level)}
 
 CRITICAL INSTRUCTIONS:
 1. Your response MUST be ONLY valid, complete JSON - no markdown, no explanations, no truncation

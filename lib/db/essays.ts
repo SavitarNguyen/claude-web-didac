@@ -1,5 +1,7 @@
 import { createServerClient } from "../supabase-server"
 
+export type EssayLevel = '5.0_or_below' | '5.5_to_6.5' | '7.0_or_above'
+
 export interface Essay {
   id?: string
   title: string
@@ -9,6 +11,7 @@ export interface Essay {
   feedback?: any
   userId: string
   isFlagged: boolean
+  level?: EssayLevel
   createdAt?: Date
   updatedAt?: Date
 }
@@ -38,6 +41,7 @@ export async function getEssaysByUserId(userId: string, limit = 10) {
     feedback: essay.feedback,
     userId: essay.user_id,
     isFlagged: essay.is_flagged,
+    level: essay.level,
     createdAt: new Date(essay.created_at),
     updatedAt: new Date(essay.updated_at),
   }))
@@ -63,6 +67,7 @@ export async function getEssayById(id: string) {
     feedback: data.feedback,
     userId: data.user_id,
     isFlagged: data.is_flagged,
+    level: data.level,
     createdAt: new Date(data.created_at),
     updatedAt: new Date(data.updated_at),
   }
@@ -88,6 +93,11 @@ export async function createEssay(essayData: Omit<Essay, "id" | "createdAt" | "u
   // Only include corrected_content if it exists (in case column hasn't been added yet)
   if (essayData.correctedContent !== undefined) {
     insertData.corrected_content = essayData.correctedContent
+  }
+
+  // Include level if it exists
+  if (essayData.level !== undefined) {
+    insertData.level = essayData.level
   }
 
   const { data, error} = await supabase
@@ -118,6 +128,7 @@ export async function updateEssay(id: string, essayData: Partial<Essay>) {
   if (essayData.score !== undefined) updates.score = essayData.score
   if (essayData.feedback) updates.feedback = essayData.feedback
   if (essayData.isFlagged !== undefined) updates.is_flagged = essayData.isFlagged
+  if (essayData.level) updates.level = essayData.level
 
   const { error } = await supabase.from("essays").update(updates).eq("id", id)
 
@@ -154,6 +165,7 @@ export async function getFlaggedEssays(limit = 10) {
     feedback: essay.feedback,
     userId: essay.user_id,
     isFlagged: essay.is_flagged,
+    level: essay.level,
     createdAt: new Date(essay.created_at),
     updatedAt: new Date(essay.updated_at),
   }))

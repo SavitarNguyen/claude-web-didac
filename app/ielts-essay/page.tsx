@@ -60,6 +60,7 @@ export default function IELTSEssayPage() {
   const [showFeedback, setShowFeedback] = useState(false)
   const [progress, setProgress] = useState(0)
   const [statusMessage, setStatusMessage] = useState("")
+  const [selectedLevel, setSelectedLevel] = useState<'5.0_or_below' | '5.5_to_6.5' | '7.0_or_above'>('5.5_to_6.5')
 
   // Topic selector state
   const [topics, setTopics] = useState<Topic[]>([])
@@ -230,6 +231,7 @@ export default function IELTSEssayPage() {
           text: essayText,
           instructionNames: ["ielts"],
           stream: true,
+          level: selectedLevel,
         }),
       })
 
@@ -292,6 +294,7 @@ export default function IELTSEssayPage() {
                       correctedContent,
                       score: parsedFeedback.overallBand,
                       feedback: parsedFeedback,
+                      level: selectedLevel,
                     }),
                   })
                 }
@@ -494,6 +497,27 @@ export default function IELTSEssayPage() {
                 onChange={(e) => setEssayTitle(e.target.value)}
                 disabled={isAnalyzing}
               />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="level">Your Current Level *</Label>
+              <Select
+                value={selectedLevel}
+                onValueChange={(value) => setSelectedLevel(value as '5.0_or_below' | '5.5_to_6.5' | '7.0_or_above')}
+                disabled={isAnalyzing}
+              >
+                <SelectTrigger id="level">
+                  <SelectValue placeholder="Select your level" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="5.0_or_below">5.0 or below (Beginner - Vietnamese feedback, basic focus)</SelectItem>
+                  <SelectItem value="5.5_to_6.5">5.5 - 6.5 (Intermediate - Vietnamese feedback, full analysis)</SelectItem>
+                  <SelectItem value="7.0_or_above">7.0 or above (Advanced - English feedback, full analysis)</SelectItem>
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-muted-foreground">
+                Choose your level to get personalized feedback in the right language
+              </p>
             </div>
 
             <div className="space-y-2">
