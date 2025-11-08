@@ -8,11 +8,12 @@ interface RequestJSON {
   instructionNames: InstructionName[];
   stream?: boolean;
   apiKey?: string; // Optional: user-provided Gemini API key
+  level?: '5.0_or_below' | '5.5_to_6.5' | '7.0_or_above'; // Student proficiency level
 }
 
 export async function POST(request: Request) {
   const body: RequestJSON = await request.json();
-  const { text, instructionNames, stream = true, apiKey: userApiKey } = body;
+  const { text, instructionNames, stream = true, apiKey: userApiKey, level } = body;
 
   if (!text) {
     return NextResponse.json({ error: "No text provided" });
@@ -27,7 +28,7 @@ export async function POST(request: Request) {
     const readableStream = new ReadableStream({
       async start(controller) {
         try {
-          for await (const chunk of geminiRefineTextStream(text, instructions)) {
+          for await (const chunk of geminiRefineTextStream(text, instructions, undefined, level)) {
             // Send chunk as Server-Sent Events format
             const data = JSON.stringify({ chunk });
             controller.enqueue(encoder.encode(`data: ${data}\n\n`));
@@ -56,6 +57,6 @@ export async function POST(request: Request) {
   }
 
   // Fallback to non-streaming mode
-  const refined = await refineText(text, instructions);
+  const refined = await refineText(text, instructions, undefined, level);
   return NextResponse.json({ text, refined: refined });
 }
