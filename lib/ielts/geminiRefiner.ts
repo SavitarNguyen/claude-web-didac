@@ -401,6 +401,60 @@ TECHNICAL REQUIREMENTS:
 5. Evidence quotes must be verbatim from essay
 6. Analyze each paragraph for TA & CC compliance
 
+IELTS ESSAY STRUCTURE GUIDELINES (Based on IELTS Liz Methodology):
+
+**INTRODUCTION REQUIREMENTS:**
+- Must contain EXACTLY 2 sentences:
+  1️⃣ Sentence 1: Paraphrase the essay question
+  2️⃣ Sentence 2: Thesis statement - give a clear, direct answer or position to the question
+- Length: 40-60 words
+- ❌ DO NOT add a "hook" or general opening sentence (not part of IELTS marking criteria)
+- ❌ DO NOT add background information or context
+- Focus on clarity and directness, not decoration
+- Example: "Some people believe that online education is more beneficial than traditional classroom learning. I completely disagree with this view because face-to-face interaction is essential for effective learning."
+
+**CONCLUSION REQUIREMENTS - CRITICAL:**
+- A conclusion is MANDATORY in IELTS Writing Task 2
+- Missing conclusion = Task Response penalty (TR drops below Band 6.0 automatically)
+- Task Response accounts for 25% of the total score
+- Write 1-2 sentences only:
+  ✅ Summarize your key points briefly
+  ✅ Restate your position clearly (for opinion/discussion essays)
+  ❌ DO NOT introduce new ideas or examples
+  ❌ DO NOT add recommendations unless the question asks for them
+- Use clear conclusion linkers naturally: "In conclusion", "To sum up", "Overall", "As a result"
+- Example: "In conclusion, although online courses offer flexibility, traditional classroom education provides essential interpersonal skills that cannot be replaced by digital learning."
+
+**SUGGESTED BODY PARAGRAPH STRUCTURE:**
+Each body paragraph should follow this pattern (guide, not rigid rule):
+1. Topic sentence: Clear main idea that directly addresses the question
+2. Supporting idea 1: Explanation | Cause-Effect | Concrete Example
+3. Supporting idea 2: Explanation | Cause-Effect | Concrete Example
+4. Each idea should be fully developed with specific details
+
+**OVERALL ESSAY STRUCTURE:**
+Introduction (2 sentences):
+- Paraphrase question + Thesis statement
+
+Body Paragraph 1:
+- Topic sentence
+- First supporting idea with explanation/example
+- Second supporting idea with explanation/example
+
+Body Paragraph 2:
+- Topic sentence
+- First supporting idea with explanation/example
+- Second supporting idea with explanation/example
+
+Conclusion (1-2 sentences):
+- Summarize key points + Restate position
+
+**WHEN ANALYZING ESSAYS:**
+- If introduction has more/fewer than 2 sentences, note this as a TR issue
+- If conclusion is missing, this is a CRITICAL TR issue (automatic Band 5.5 or below)
+- If body paragraphs lack clear topic sentences or development, note as TR/CC issues
+- If conclusion introduces new ideas, note this as a TR issue
+
 PARAGRAPH ANALYSIS - SIMPLIFIED ACTIONABLE FEEDBACK:
 
 **CRITICAL: PARAGRAPH ANALYSIS SCOPE**
@@ -1081,6 +1135,60 @@ TECHNICAL REQUIREMENTS:
 4. wordCorrections types: "deletion", "replacement", "addition"
 5. Evidence quotes must be verbatim from essay
 6. Analyze each paragraph for TA & CC compliance
+
+IELTS ESSAY STRUCTURE GUIDELINES (Based on IELTS Liz Methodology):
+
+**INTRODUCTION REQUIREMENTS:**
+- Must contain EXACTLY 2 sentences:
+  1️⃣ Sentence 1: Paraphrase the essay question
+  2️⃣ Sentence 2: Thesis statement - give a clear, direct answer or position to the question
+- Length: 40-60 words
+- ❌ DO NOT add a "hook" or general opening sentence (not part of IELTS marking criteria)
+- ❌ DO NOT add background information or context
+- Focus on clarity and directness, not decoration
+- Example: "Some people believe that online education is more beneficial than traditional classroom learning. I completely disagree with this view because face-to-face interaction is essential for effective learning."
+
+**CONCLUSION REQUIREMENTS - CRITICAL:**
+- A conclusion is MANDATORY in IELTS Writing Task 2
+- Missing conclusion = Task Response penalty (TR drops below Band 6.0 automatically)
+- Task Response accounts for 25% of the total score
+- Write 1-2 sentences only:
+  ✅ Summarize your key points briefly
+  ✅ Restate your position clearly (for opinion/discussion essays)
+  ❌ DO NOT introduce new ideas or examples
+  ❌ DO NOT add recommendations unless the question asks for them
+- Use clear conclusion linkers naturally: "In conclusion", "To sum up", "Overall", "As a result"
+- Example: "In conclusion, although online courses offer flexibility, traditional classroom education provides essential interpersonal skills that cannot be replaced by digital learning."
+
+**SUGGESTED BODY PARAGRAPH STRUCTURE:**
+Each body paragraph should follow this pattern (guide, not rigid rule):
+1. Topic sentence: Clear main idea that directly addresses the question
+2. Supporting idea 1: Explanation | Cause-Effect | Concrete Example
+3. Supporting idea 2: Explanation | Cause-Effect | Concrete Example
+4. Each idea should be fully developed with specific details
+
+**OVERALL ESSAY STRUCTURE:**
+Introduction (2 sentences):
+- Paraphrase question + Thesis statement
+
+Body Paragraph 1:
+- Topic sentence
+- First supporting idea with explanation/example
+- Second supporting idea with explanation/example
+
+Body Paragraph 2:
+- Topic sentence
+- First supporting idea with explanation/example
+- Second supporting idea with explanation/example
+
+Conclusion (1-2 sentences):
+- Summarize key points + Restate position
+
+**WHEN ANALYZING ESSAYS:**
+- If introduction has more/fewer than 2 sentences, note this as a TR issue
+- If conclusion is missing, this is a CRITICAL TR issue (automatic Band 5.5 or below)
+- If body paragraphs lack clear topic sentences or development, note as TR/CC issues
+- If conclusion introduces new ideas, note this as a TR issue
 
 PARAGRAPH ANALYSIS - SIMPLIFIED ACTIONABLE FEEDBACK:
 
