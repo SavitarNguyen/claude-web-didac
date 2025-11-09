@@ -20,7 +20,8 @@ function getLevelInstructions(level?: '5.0_or_below' | '5.5_to_6.5' | '7.0_or_ab
   switch (level) {
     case '5.0_or_below':
       return `
-STUDENT LEVEL: 5.0 or below (Beginner)
+STUDENT'S SELF-DECLARED TARGET LEVEL: 5.0 or below (Beginner)
+⚠️ CRITICAL: This is the student's SELF-DECLARED target level, NOT their actual band score!
 FEEDBACK LANGUAGE: Vietnamese (Tiếng Việt) for explanations ONLY
 FOCUS AREAS: Basic vocabulary, basic grammar, and fundamental ideas only
 CRITICAL LANGUAGE INSTRUCTIONS:
@@ -69,9 +70,11 @@ When creating correctedSentence, revisedParagraph, and vocabulary suggestions:
    - Suggest common Band 5-6 words, not Band 7-8 academic vocabulary
    - Example: suggest "difficult" instead of "challenging", not "arduous"
 
-5. **TARGET REALISTIC BAND IMPROVEMENT**:
-   - Aim for Band 5.0 → 5.5-6.0 improvements
+5. **TARGET REALISTIC BAND IMPROVEMENT IN CORRECTIONS**:
+   - ⚠️ This applies ONLY to the corrections/suggestions you provide, NOT to the band score
+   - When revising sentences/paragraphs, aim for realistic Band 5.0 → 5.5-6.0 improvements
    - Do NOT use Band 7+ vocabulary or grammar in corrections
+   - The ACTUAL band score must still be objective based on the original essay quality
 
 
 FOCUS:
@@ -82,7 +85,8 @@ FOCUS:
 
     case '5.5_to_6.5':
       return `
-STUDENT LEVEL: 5.5 - 6.5 (Intermediate)
+STUDENT'S SELF-DECLARED TARGET LEVEL: 5.5 - 6.5 (Intermediate)
+⚠️ CRITICAL: This is the student's SELF-DECLARED target level, NOT their actual band score!
 FEEDBACK LANGUAGE: Vietnamese (Tiếng Việt) for explanations ONLY
 FOCUS AREAS: Full comprehensive analysis (all IELTS criteria)
 CRITICAL LANGUAGE INSTRUCTIONS:
@@ -154,10 +158,12 @@ When creating correctedSentence, revisedParagraph, and vocabulary suggestions:
 
  
 
-6. **TARGET REALISTIC BAND IMPROVEMENT**:
-   - Aim for Band 5.5-6.5 → 7.0-7.5 improvements
+6. **TARGET REALISTIC BAND IMPROVEMENT IN CORRECTIONS**:
+   - ⚠️ This applies ONLY to the corrections/suggestions you provide, NOT to the band score
+   - When revising sentences/paragraphs, aim for realistic Band 5.5-6.5 → 7.0-7.5 improvements
    - Use natural Band 6-7 vocabulary and grammar
    - Do NOT use Band 8-9 sophisticated language - keep it natural and clear
+   - The ACTUAL band score must still be objective based on the original essay quality
 
 FOCUS:
 - Analyze all aspects: Task Response, Coherence & Cohesion, Lexical Resource, and Grammatical Range & Accuracy
@@ -166,7 +172,8 @@ FOCUS:
 
     case '7.0_or_above':
       return `
-STUDENT LEVEL: 7.0 or above (Advanced)
+STUDENT'S SELF-DECLARED TARGET LEVEL: 7.0 or above (Advanced)
+⚠️ CRITICAL: This is the student's SELF-DECLARED target level, NOT their actual band score!
 FEEDBACK LANGUAGE: English
 FOCUS AREAS: Full comprehensive analysis with advanced insights
 
@@ -174,11 +181,13 @@ IMPORTANT:
 - ALL feedback fields (feedback, issue, explanation, howToRevise, etc.) MUST be in English
 - Analyze all aspects with high-level insights and nuanced observations
 - Focus on subtle improvements that will help students reach Band 8.0+
-- Provide sophisticated feedback with advanced IELTS assessment criteria`;
+- Provide sophisticated feedback with advanced IELTS assessment criteria
+- ⚠️ CRITICAL: The ACTUAL band score must still be objective - if the essay is Band 6.0, score it as 6.0 regardless of the student's declared target level`;
 
     default:
       return `
-STUDENT LEVEL: 5.5 - 6.5 (Intermediate - Default)
+STUDENT'S SELF-DECLARED TARGET LEVEL: 5.5 - 6.5 (Intermediate - Default)
+⚠️ CRITICAL: This is the student's SELF-DECLARED target level, NOT their actual band score!
 FEEDBACK LANGUAGE: Vietnamese (Tiếng Việt)
 FOCUS AREAS: Full comprehensive analysis (all IELTS criteria)`;
   }
@@ -251,6 +260,27 @@ async function handleIELTSModeInteractive(
   const ieltsPrompt = `You are an expert IELTS Writing Task 2 examiner. Return a JSON object with comprehensive sentence-level feedback.
 
 ${getLevelInstructions(level)}
+
+🚨 SCORING OBJECTIVITY RULE (ABSOLUTELY CRITICAL) 🚨
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+The band scores you assign MUST be 100% OBJECTIVE and based ONLY on the actual quality of the essay writing.
+
+❌ DO NOT let the student's self-declared target level influence your scoring
+❌ DO NOT anchor your scoring expectations based on their declared level
+❌ DO NOT be more lenient or stricter based on what level they claim to be
+
+✅ Score each criterion (TR, CC, LR, GRA) based purely on the IELTS official band descriptors
+✅ If a student declares "5.0 or below" but writes at Band 7.5 quality, give them Band 7.5
+✅ If a student declares "7.0 or above" but writes at Band 5.5 quality, give them Band 5.5
+✅ The declared level is ONLY for customizing feedback language/style, NOT for scoring
+
+Example scenarios:
+- Student declares "5.0 or below" + writes excellent essay → Score objectively (could be 7.0+)
+- Student declares "7.0 or above" + writes poor essay → Score objectively (could be 5.5)
+- The self-declared level should NEVER appear in your scoring reasoning
+
+Your job is to be an OBJECTIVE examiner, not to validate the student's self-assessment.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 CRITICAL INSTRUCTIONS:
 1. Your response MUST be ONLY valid, complete JSON - no markdown, no explanations, no truncation
