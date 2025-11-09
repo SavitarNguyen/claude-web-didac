@@ -11,6 +11,7 @@ import { useSession } from "next-auth/react"
 import { useToast } from "@/hooks/use-toast"
 import { FullScreenFeedbackView } from "@/components/ielts/FullScreenFeedbackView"
 import { Progress } from "@/components/ui/progress"
+import { IdeasGenerator } from "@/components/ielts/IdeasGenerator"
 import {
   Select,
   SelectContent,
@@ -664,6 +665,17 @@ export default function IELTSEssayPage() {
                   General vocabulary and grammar structures for this topic will be displayed here.
                   Administrators can add these in the admin panel.
                 </p>
+              </div>
+            )}
+
+            {/* Ideas Generator */}
+            {selectedPromptId && selectedPromptId !== "general" && (
+              <div className="pt-4 border-t">
+                <IdeasGenerator
+                  essayPrompt={prompts.find((p) => p.id === selectedPromptId)?.description || ""}
+                  level={selectedLevel}
+                  disabled={isAnalyzing}
+                />
               </div>
             )}
 
