@@ -34,9 +34,8 @@ export function Header() {
       <div className="container flex h-14 items-center">
         <MobileNav />
         <div className="mr-4 hidden md:flex">
-          <a href="/" className="flex items-center space-x-2">
-            <BookOpen className="h-6 w-6 text-primary" />
-            <span className="font-bold">CuteVocabLMS</span>
+          <a href="/" className="flex items-center overflow-hidden h-12">
+            <img src="/didac-logo.png" alt="didac" className="h-40 object-cover object-center" style={{ transform: 'scale(1.5)', transformOrigin: 'center' }} />
           </a>
         </div>
         <div className="flex flex-1 items-center justify-end space-x-4">
