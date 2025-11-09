@@ -6,8 +6,9 @@ import { useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Loader2, FileText, Calendar, TrendingUp, History, RotateCcw } from "lucide-react"
+import { Loader2, FileText, Calendar, TrendingUp, History, RotateCcw, Trash2, ChevronLeft, ChevronRight } from "lucide-react"
 import { formatDistanceToNow } from "date-fns"
+import { useToast } from "@/hooks/use-toast"
 import {
   Dialog,
   DialogContent,
@@ -15,6 +16,16 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 
 interface EssayHistory {
   _id: string
@@ -50,12 +61,19 @@ interface DraftVersion {
 export default function MyEssaysPage() {
   const { data: session, status } = useSession()
   const router = useRouter()
+  const { toast } = useToast()
   const [essays, setEssays] = useState<EssayHistory[]>([])
   const [drafts, setDrafts] = useState<Draft[]>([])
   const [loading, setLoading] = useState(true)
   const [selectedDraft, setSelectedDraft] = useState<Draft | null>(null)
   const [draftVersions, setDraftVersions] = useState<DraftVersion[]>([])
   const [showVersionHistory, setShowVersionHistory] = useState(false)
+  const [deletingDraft, setDeletingDraft] = useState<Draft | null>(null)
+  const [deletingEssay, setDeletingEssay] = useState<EssayHistory | null>(null)
+  const [isDeleting, setIsDeleting] = useState(false)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [totalEssays, setTotalEssays] = useState(0)
+  const essaysPerPage = 12
 
   useEffect(() => {
     if (status === "loading") return
@@ -67,16 +85,17 @@ export default function MyEssaysPage() {
 
     fetchEssays()
     fetchDrafts()
-  }, [session, status, router])
+  }, [session, status, router, currentPage])
 
   const fetchEssays = async () => {
     try {
-      const response = await fetch("/api/essays")
+      const response = await fetch(`/api/essays?page=${currentPage}&limit=${essaysPerPage}`)
       if (!response.ok) {
         throw new Error("Failed to fetch essays")
       }
       const data = await response.json()
-      setEssays(data)
+      setEssays(data.essays)
+      setTotalEssays(data.total)
     } catch (error) {
       console.error("Error fetching essays:", error)
     } finally {
@@ -141,6 +160,70 @@ export default function MyEssaysPage() {
     router.push(`/ielts-essay?draft=${draft.id}`)
   }
 
+  const handleDeleteDraft = async () => {
+    if (!deletingDraft) return
+
+    setIsDeleting(true)
+    try {
+      const response = await fetch(`/api/essay-drafts/${deletingDraft.id}`, {
+        method: "DELETE",
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to delete draft")
+      }
+
+      toast({
+        title: "Draft deleted",
+        description: "Your draft has been deleted successfully",
+      })
+
+      setDeletingDraft(null)
+      fetchDrafts()
+    } catch (error) {
+      console.error("Error deleting draft:", error)
+      toast({
+        title: "Error",
+        description: "Failed to delete draft",
+        variant: "destructive",
+      })
+    } finally {
+      setIsDeleting(false)
+    }
+  }
+
+  const handleDeleteEssay = async () => {
+    if (!deletingEssay) return
+
+    setIsDeleting(true)
+    try {
+      const response = await fetch(`/api/essays/${deletingEssay._id}`, {
+        method: "DELETE",
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to delete essay")
+      }
+
+      toast({
+        title: "Essay deleted",
+        description: "Your essay has been deleted successfully",
+      })
+
+      setDeletingEssay(null)
+      fetchEssays()
+    } catch (error) {
+      console.error("Error deleting essay:", error)
+      toast({
+        title: "Error",
+        description: "Failed to delete essay",
+        variant: "destructive",
+      })
+    } finally {
+      setIsDeleting(false)
+    }
+  }
+
   if (loading || status === "loading") {
     return (
       <div className="container py-8 flex items-center justify-center min-h-[60vh]">
@@ -168,7 +251,7 @@ export default function MyEssaysPage() {
           </TabsList>
 
           <TabsContent value="completed" className="mt-6">
-            {essays.length === 0 ? (
+            {essays.length === 0 && totalEssays === 0 ? (
               <Card>
                 <CardContent className="flex flex-col items-center justify-center py-12">
                   <FileText className="h-12 w-12 text-muted-foreground mb-4" />
@@ -181,56 +264,130 @@ export default function MyEssaysPage() {
                 </CardContent>
               </Card>
             ) : (
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {essays.map((essay) => (
-                  <Card
-                    key={essay._id}
-                    className="hover:shadow-lg transition-shadow cursor-pointer"
-                    onClick={() => handleViewEssay(essay._id)}
-                  >
-                    <CardHeader>
-                      <CardTitle className="text-lg line-clamp-2">{essay.title}</CardTitle>
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Calendar className="h-4 w-4" />
-                        <span>
-                          {formatDistanceToNow(new Date(essay.createdAt), { addSuffix: true })}
-                        </span>
-                      </div>
-                    </CardHeader>
-                    <CardContent className="space-y-3">
-                      {essay.score !== undefined && (
-                        <div className="flex items-center gap-2">
-                          <TrendingUp className="h-4 w-4 text-primary" />
-                          <span className="font-semibold">Band Score: {essay.score}</span>
-                        </div>
-                      )}
-
-                      <p className="text-sm text-muted-foreground line-clamp-3">
-                        {essay.content.substring(0, 150)}...
-                      </p>
-
-                      {essay.correctedContent && (
-                        <div className="pt-2">
-                          <span className="text-xs bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-100 px-2 py-1 rounded">
-                            ✓ Corrected version available
+              <>
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                  {essays.map((essay) => (
+                    <Card
+                      key={essay._id}
+                      className="hover:shadow-lg transition-shadow cursor-pointer"
+                      onClick={() => handleViewEssay(essay._id)}
+                    >
+                      <CardHeader>
+                        <CardTitle className="text-lg line-clamp-2">{essay.title}</CardTitle>
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <Calendar className="h-4 w-4" />
+                          <span>
+                            {formatDistanceToNow(new Date(essay.createdAt), { addSuffix: true })}
                           </span>
                         </div>
-                      )}
+                      </CardHeader>
+                      <CardContent className="space-y-3">
+                        {essay.score !== undefined && (
+                          <div className="flex items-center gap-2">
+                            <TrendingUp className="h-4 w-4 text-primary" />
+                            <span className="font-semibold">Band Score: {essay.score}</span>
+                          </div>
+                        )}
 
-                      <Button
-                        variant="outline"
-                        className="w-full mt-2"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          handleViewEssay(essay._id)
-                        }}
-                      >
-                        View Details
-                      </Button>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
+                        <p className="text-sm text-muted-foreground line-clamp-3">
+                          {essay.content.substring(0, 150)}...
+                        </p>
+
+                        {essay.correctedContent && (
+                          <div className="pt-2">
+                            <span className="text-xs bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-100 px-2 py-1 rounded">
+                              ✓ Corrected version available
+                            </span>
+                          </div>
+                        )}
+
+                        <div className="flex gap-2">
+                          <Button
+                            variant="outline"
+                            className="flex-1 mt-2"
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              handleViewEssay(essay._id)
+                            }}
+                          >
+                            View Details
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="mt-2"
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              setDeletingEssay(essay)
+                            }}
+                          >
+                            <Trash2 className="h-4 w-4 text-destructive" />
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+
+                {/* Pagination Controls */}
+                {totalEssays > essaysPerPage && (
+                  <div className="flex items-center justify-center gap-2 mt-8">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                      disabled={currentPage === 1}
+                    >
+                      <ChevronLeft className="h-4 w-4 mr-1" />
+                      Previous
+                    </Button>
+
+                    <div className="flex items-center gap-2">
+                      {Array.from({ length: Math.ceil(totalEssays / essaysPerPage) }, (_, i) => i + 1)
+                        .filter((page) => {
+                          const totalPages = Math.ceil(totalEssays / essaysPerPage)
+                          // Show first page, last page, current page, and pages around current
+                          return (
+                            page === 1 ||
+                            page === totalPages ||
+                            Math.abs(page - currentPage) <= 1
+                          )
+                        })
+                        .map((page, index, array) => (
+                          <div key={page} className="flex items-center gap-2">
+                            {index > 0 && array[index - 1] !== page - 1 && (
+                              <span className="text-muted-foreground">...</span>
+                            )}
+                            <Button
+                              variant={currentPage === page ? "default" : "outline"}
+                              size="sm"
+                              onClick={() => setCurrentPage(page)}
+                            >
+                              {page}
+                            </Button>
+                          </div>
+                        ))}
+                    </div>
+
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setCurrentPage((p) => Math.min(Math.ceil(totalEssays / essaysPerPage), p + 1))}
+                      disabled={currentPage === Math.ceil(totalEssays / essaysPerPage)}
+                    >
+                      Next
+                      <ChevronRight className="h-4 w-4 ml-1" />
+                    </Button>
+                  </div>
+                )}
+
+                {/* Total count display */}
+                {totalEssays > 0 && (
+                  <div className="text-center text-sm text-muted-foreground mt-4">
+                    Showing {((currentPage - 1) * essaysPerPage) + 1}-{Math.min(currentPage * essaysPerPage, totalEssays)} of {totalEssays} essays
+                  </div>
+                )}
+              </>
             )}
           </TabsContent>
 
@@ -294,6 +451,13 @@ export default function MyEssaysPage() {
                         >
                           <History className="h-4 w-4" />
                         </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => setDeletingDraft(draft)}
+                        >
+                          <Trash2 className="h-4 w-4 text-destructive" />
+                        </Button>
                       </div>
                     </CardContent>
                   </Card>
@@ -350,6 +514,64 @@ export default function MyEssaysPage() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Delete Draft Confirmation */}
+      <AlertDialog open={!!deletingDraft} onOpenChange={(open) => !open && setDeletingDraft(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Draft?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this draft? This action cannot be undone and will delete all versions of this draft.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteDraft}
+              disabled={isDeleting}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {isDeleting ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Deleting...
+                </>
+              ) : (
+                "Delete"
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Delete Essay Confirmation */}
+      <AlertDialog open={!!deletingEssay} onOpenChange={(open) => !open && setDeletingEssay(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Essay?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this essay? This action cannot be undone and will permanently delete your essay, corrections, and feedback.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteEssay}
+              disabled={isDeleting}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {isDeleting ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Deleting...
+                </>
+              ) : (
+                "Delete"
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   )
 }

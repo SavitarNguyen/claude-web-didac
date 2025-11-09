@@ -257,10 +257,10 @@ export function FullScreenFeedbackView({
               variant="fullWidth"
             >
               <Tab
-                label="Sentence Feedback"
+                label="Grammar & Vocab (Sentence)"
               />
               <Tab label="Band Scores" icon={<Assessment />} iconPosition="start" />
-              <Tab label="Paragraph Analysis" icon={<Article />} iconPosition="start" />
+              <Tab label="TA/CC (Paragraph)" icon={<Article />} iconPosition="start" />
             </Tabs>
           </Paper>
 

@@ -16,23 +16,35 @@ export interface Essay {
   updatedAt?: Date
 }
 
-export async function getEssaysByUserId(userId: string, limit = 10) {
+export async function getEssaysByUserId(
+  userId: string,
+  options?: { limit?: number; offset?: number }
+) {
   const supabase = createServerClient()
+  const limit = options?.limit || 12
+  const offset = options?.offset || 0
 
+  // Get total count
+  const { count } = await supabase
+    .from("essays")
+    .select("*", { count: "exact", head: true })
+    .eq("user_id", userId)
+
+  // Get paginated data
   const { data, error } = await supabase
     .from("essays")
     .select("*")
     .eq("user_id", userId)
     .order("created_at", { ascending: false })
-    .limit(limit)
+    .range(offset, offset + limit - 1)
 
   if (error) {
     console.error("Error fetching essays:", error)
-    return []
+    return { essays: [], total: 0 }
   }
 
   // Convert Supabase format to MongoDB format for compatibility
-  return data.map((essay) => ({
+  const essays = data.map((essay) => ({
     _id: essay.id,
     title: essay.title,
     content: essay.content,
@@ -45,6 +57,8 @@ export async function getEssaysByUserId(userId: string, limit = 10) {
     createdAt: new Date(essay.created_at),
     updatedAt: new Date(essay.updated_at),
   }))
+
+  return { essays, total: count || 0 }
 }
 
 export async function getEssayById(id: string) {
@@ -138,6 +152,23 @@ export async function updateEssay(id: string, essayData: Partial<Essay>) {
   }
 
   return { modifiedCount: 1 }
+}
+
+export async function deleteEssay(id: string, userId: string) {
+  const supabase = createServerClient()
+
+  const { error } = await supabase
+    .from("essays")
+    .delete()
+    .eq("id", id)
+    .eq("user_id", userId)
+
+  if (error) {
+    console.error("Error deleting essay:", error)
+    throw error
+  }
+
+  return { deletedCount: 1 }
 }
 
 export async function getFlaggedEssays(limit = 10) {
