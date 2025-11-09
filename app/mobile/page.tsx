@@ -7,7 +7,7 @@ export default function MobilePage() {
   return (
     <div className="container py-8">
       <div className="flex flex-col items-center text-center mb-12">
-        <h1 className="text-4xl font-bold tracking-tight mb-4">Get CuteVocabLMS on Your Mobile Device</h1>
+        <h1 className="text-4xl font-bold tracking-tight mb-4">Get didac on Your Mobile Device</h1>
         <p className="text-muted-foreground max-w-2xl">
           Take your vocabulary learning on the go with our native mobile apps for iOS and Android. Study flashcards,
           practice speaking, and track your progress anywhere, anytime.

@@ -115,9 +115,8 @@ export function AppSidebar() {
       className="z-50" // Ensure sidebar has a high z-index
     >
       <SidebarHeader className="flex flex-col items-center justify-center py-4">
-        <div className="flex items-center space-x-2">
-          <BookOpen className="h-8 w-8 text-primary" />
-          <h1 className="text-xl font-bold">CuteVocabLMS</h1>
+        <div className="flex items-center overflow-hidden h-20">
+          <img src="/didac-logo.png" alt="didac" className="h-64 object-cover object-center" style={{ transform: 'scale(1.5)', transformOrigin: 'center' }} />
         </div>
       </SidebarHeader>
       <SidebarSeparator />

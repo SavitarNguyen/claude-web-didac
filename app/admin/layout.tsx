@@ -2,8 +2,8 @@ import type React from "react"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Admin Dashboard - CuteVocabLMS",
-  description: "Admin dashboard for CuteVocabLMS",
+  title: "Admin Dashboard - didac",
+  description: "Admin dashboard for didac",
 }
 
 export default function AdminLayout({

@@ -4,45 +4,45 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
+    --background: 0 0% 100%; /* White #FFFFFF */
+    --foreground: 0 0% 10%; /* Almost Black #1A1A1A */
 
     --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
+    --card-foreground: 0 0% 10%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
+    --popover-foreground: 0 0% 10%;
 
-    --primary: 340 82% 84%;
-    --primary-foreground: 355 70% 30%;
+    --primary: 233 100% 65%; /* Indigo Blue #4B5EFF */
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 260 84% 90%;
-    --secondary-foreground: 260 60% 30%;
+    --secondary: 193 59% 47%; /* Aqua Cyan #30a3bf */
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
+    --muted: 220 25% 97%; /* Very Light Blue #F6F8FB */
+    --muted-foreground: 0 0% 33%; /* Gray #555555 */
 
-    --accent: 186 100% 88%;
-    --accent-foreground: 186 70% 30%;
+    --accent: 193 59% 47%; /* Aqua Cyan #30a3bf */
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 340 82% 84%;
+    --border: 220 25% 90%;
+    --input: 220 25% 90%;
+    --ring: 233 100% 65%; /* Indigo Blue #4B5EFF */
 
     --radius: 0.5rem;
 
     /* Sidebar colors */
-    --sidebar-background: 340 100% 97%;
-    --sidebar-foreground: 340 60% 30%;
-    --sidebar-primary: 340 82% 84%;
-    --sidebar-primary-foreground: 355 70% 30%;
-    --sidebar-accent: 340 100% 94%;
-    --sidebar-accent-foreground: 340 60% 30%;
-    --sidebar-border: 340 100% 92%;
-    --sidebar-ring: 340 82% 84%;
+    --sidebar-background: 220 25% 97%; /* Very Light Blue */
+    --sidebar-foreground: 0 0% 10%; /* Almost Black */
+    --sidebar-primary: 233 100% 65%; /* Indigo Blue */
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 193 59% 47%; /* Aqua Cyan #30a3bf */
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 220 25% 90%;
+    --sidebar-ring: 233 100% 65%; /* Indigo Blue */
   }
 
   .dark {

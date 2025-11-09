@@ -9,8 +9,8 @@ import { WordTranslationMenu } from "@/components/word-translation-menu"
 import "./globals.css"
 
 export const metadata = {
-  title: "CuteVocabLMS",
-  description: "A cute vocabulary learning management system",
+  title: "didac",
+  description: "An intelligent learning management system",
     generator: 'v0.dev'
 }
 
@@ -26,7 +26,7 @@ export default function RootLayout({
           <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
             <SidebarProvider>
               <AppSidebar />
-              <main className="flex-1 min-h-screen bg-gradient-to-b from-pink-50 to-purple-50 dark:from-slate-950 dark:to-slate-900">
+              <main className="flex-1 min-h-screen bg-white dark:from-slate-950 dark:to-slate-900">
                 <Header />
                 {children}
               </main>
