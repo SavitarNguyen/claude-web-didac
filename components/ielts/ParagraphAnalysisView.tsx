@@ -6,8 +6,14 @@ import {
   AccordionDetails,
   Stack,
   Chip,
+  Paper,
 } from "@mui/material";
-import { ExpandMore } from "@mui/icons-material";
+import {
+  ExpandMore,
+  Error as ErrorIcon,
+  TipsAndUpdates,
+  School,
+} from "@mui/icons-material";
 import { ParagraphAnalysis } from "@/lib/types/ielts";
 
 interface ParagraphAnalysisViewProps {
@@ -65,37 +71,190 @@ export function ParagraphAnalysisView({
               </Stack>
             </AccordionSummary>
             <AccordionDetails>
-              <Stack spacing={2}>
-                <Typography variant="body2">
-                  <strong>Original:</strong> {para.text}
-                </Typography>
-                <Typography variant="body2">
-                  <strong>Revised:</strong> {para.revisedParagraph}
-                </Typography>
-                {para.overallParagraphBand && (
-                  <Typography variant="body2">
-                    <strong>Band Score:</strong> {para.overallParagraphBand}
-                  </Typography>
-                )}
+              <Stack spacing={3}>
+                {/* Issues Section (Red Boxes) */}
                 {para.issues && para.issues.length > 0 && (
                   <Box>
-                    <Typography variant="body2" fontWeight="bold">Issues:</Typography>
-                    {para.issues.map((issue, idx) => (
-                      <Typography key={idx} variant="body2" color="error" sx={{ ml: 2 }}>
-                        • {issue.issue}
+                    <Stack direction="row" alignItems="center" spacing={1} mb={2}>
+                      <ErrorIcon color="error" />
+                      <Typography variant="h6" fontWeight="bold">
+                        Issues Identified
                       </Typography>
+                    </Stack>
+
+                    {para.issues.map((issue, index) => (
+                      <Paper
+                        key={index}
+                        sx={{
+                          p: 2,
+                          mb: 2,
+                          borderLeft: "4px solid #dc3545",
+                          bgcolor: "#fff5f5",
+                        }}
+                      >
+                        <Stack spacing={1.5}>
+                          {/* Issue Type with Criterion Badge */}
+                          <Box>
+                            <Stack direction="row" spacing={1} mb={1} flexWrap="wrap">
+                              <Chip
+                                label={issue.criterion}
+                                size="small"
+                                color="error"
+                              />
+                              <Chip
+                                label={issue.type}
+                                size="small"
+                                color="error"
+                                variant="outlined"
+                              />
+                            </Stack>
+                            <Typography variant="subtitle2" fontWeight="bold" color="error.dark">
+                              {issue.issue}
+                            </Typography>
+                          </Box>
+
+                          {/* Quote (if provided) */}
+                          {issue.quote && (
+                            <Box>
+                              <Typography variant="caption" color="text.secondary" fontWeight="bold">
+                                From your paragraph:
+                              </Typography>
+                              <Typography
+                                variant="body2"
+                                sx={{
+                                  mt: 0.5,
+                                  fontStyle: "italic",
+                                  bgcolor: "white",
+                                  p: 1,
+                                  borderRadius: 1,
+                                  borderLeft: "2px solid #dc3545",
+                                }}
+                              >
+                                "{issue.quote}"
+                              </Typography>
+                            </Box>
+                          )}
+
+                          {/* Explanation */}
+                          <Box>
+                            <Typography variant="caption" color="text.secondary" fontWeight="bold">
+                              Why this is problematic:
+                            </Typography>
+                            <Typography variant="body2" sx={{ mt: 0.5 }}>
+                              {issue.explanation}
+                            </Typography>
+                          </Box>
+
+                          {/* How to Revise */}
+                          <Box>
+                            <Typography variant="caption" color="text.secondary" fontWeight="bold">
+                              How to revise:
+                            </Typography>
+                            <Typography variant="body2" sx={{ mt: 0.5 }}>
+                              {issue.howToRevise}
+                            </Typography>
+                          </Box>
+                        </Stack>
+                      </Paper>
                     ))}
                   </Box>
                 )}
+
+                {/* Improvements Section (Yellow Boxes) */}
                 {para.improvements && para.improvements.length > 0 && (
                   <Box>
-                    <Typography variant="body2" fontWeight="bold">Improvements:</Typography>
-                    {para.improvements.map((improvement, idx) => (
-                      <Typography key={idx} variant="body2" color="warning.main" sx={{ ml: 2 }}>
-                        • {improvement.suggestion}
+                    <Stack direction="row" alignItems="center" spacing={1} mb={2}>
+                      <TipsAndUpdates sx={{ color: "#ff9800" }} />
+                      <Typography variant="h6" fontWeight="bold">
+                        Idea Upgrades
                       </Typography>
+                    </Stack>
+                    <Typography variant="body2" color="text.secondary" mb={2}>
+                      These ideas aren't wrong, but you can develop them further to achieve a higher band score:
+                    </Typography>
+
+                    {para.improvements.map((improvement, index) => (
+                      <Paper
+                        key={index}
+                        sx={{
+                          p: 2,
+                          mb: 2,
+                          borderLeft: "4px solid #ff9800",
+                          bgcolor: "#fff8e1",
+                        }}
+                      >
+                        <Stack spacing={1.5}>
+                          {/* Type */}
+                          <Box>
+                            <Chip
+                              label={improvement.type}
+                              size="small"
+                              color="warning"
+                              sx={{ mb: 1 }}
+                            />
+                          </Box>
+
+                          {/* Current vs Suggestion */}
+                          <Box>
+                            <Typography variant="caption" color="text.secondary" fontWeight="bold">
+                              What you currently have:
+                            </Typography>
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                mt: 0.5,
+                                bgcolor: "white",
+                                p: 1,
+                                borderRadius: 1,
+                              }}
+                            >
+                              {improvement.current}
+                            </Typography>
+                          </Box>
+
+                          <Box>
+                            <Typography variant="caption" color="text.secondary" fontWeight="bold">
+                              How to make it stronger:
+                            </Typography>
+                            <Typography variant="body2" sx={{ mt: 0.5 }}>
+                              {improvement.suggestion}
+                            </Typography>
+                          </Box>
+
+                          {/* Explanation */}
+                          <Box>
+                            <Typography variant="caption" color="text.secondary" fontWeight="bold">
+                              Why this helps:
+                            </Typography>
+                            <Typography variant="body2" sx={{ mt: 0.5 }}>
+                              {improvement.explanation}
+                            </Typography>
+                          </Box>
+
+                          {/* Band Impact */}
+                          <Box sx={{ bgcolor: "white", p: 1, borderRadius: 1 }}>
+                            <Typography variant="caption" color="warning.dark" fontWeight="bold">
+                              Band Impact: {improvement.bandImpact}
+                            </Typography>
+                          </Box>
+                        </Stack>
+                      </Paper>
                     ))}
                   </Box>
+                )}
+
+                {/* No Issues - Excellent Paragraph */}
+                {(!para.issues || para.issues.length === 0) &&
+                 (!para.improvements || para.improvements.length === 0) && (
+                  <Paper sx={{ p: 3, bgcolor: "#f1f8f4", border: "1px solid #a5d6a7", textAlign: "center" }}>
+                    <School sx={{ fontSize: 48, color: "#4caf50", mb: 1 }} />
+                    <Typography variant="h6" color="success.dark" gutterBottom>
+                      Excellent Paragraph!
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      This paragraph is well-developed with strong ideas and good coherence.
+                    </Typography>
+                  </Paper>
                 )}
               </Stack>
             </AccordionDetails>
