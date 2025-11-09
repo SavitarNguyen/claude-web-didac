@@ -9,7 +9,6 @@ import {
 } from "@mui/material";
 import { ExpandMore } from "@mui/icons-material";
 import { ParagraphAnalysis } from "@/lib/types/ielts";
-import { ParagraphFeedbackPanel } from "./ParagraphFeedbackPanel";
 
 interface ParagraphAnalysisViewProps {
   paragraphs: ParagraphAnalysis[];
@@ -66,7 +65,39 @@ export function ParagraphAnalysisView({
               </Stack>
             </AccordionSummary>
             <AccordionDetails>
-              <ParagraphFeedbackPanel paragraph={para} />
+              <Stack spacing={2}>
+                <Typography variant="body2">
+                  <strong>Original:</strong> {para.text}
+                </Typography>
+                <Typography variant="body2">
+                  <strong>Revised:</strong> {para.revisedParagraph}
+                </Typography>
+                {para.overallParagraphBand && (
+                  <Typography variant="body2">
+                    <strong>Band Score:</strong> {para.overallParagraphBand}
+                  </Typography>
+                )}
+                {para.issues && para.issues.length > 0 && (
+                  <Box>
+                    <Typography variant="body2" fontWeight="bold">Issues:</Typography>
+                    {para.issues.map((issue, idx) => (
+                      <Typography key={idx} variant="body2" color="error" sx={{ ml: 2 }}>
+                        • {issue.issue}
+                      </Typography>
+                    ))}
+                  </Box>
+                )}
+                {para.improvements && para.improvements.length > 0 && (
+                  <Box>
+                    <Typography variant="body2" fontWeight="bold">Improvements:</Typography>
+                    {para.improvements.map((improvement, idx) => (
+                      <Typography key={idx} variant="body2" color="warning.main" sx={{ ml: 2 }}>
+                        • {improvement.suggestion}
+                      </Typography>
+                    ))}
+                  </Box>
+                )}
+              </Stack>
             </AccordionDetails>
           </Accordion>
         );

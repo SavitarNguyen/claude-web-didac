@@ -450,7 +450,7 @@ export default function IELTSEssayPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="title">Essay Title (Optional)</Label>
+              <Label htmlFor="title">Essay Prompt</Label>
               <Input
                 id="title"
                 placeholder="e.g., Technology and Education"
