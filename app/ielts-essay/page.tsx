@@ -1,15 +1,17 @@
 "use client"
 
 import { useState, useEffect, useCallback, useRef } from "react"
+import { useSearchParams } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Send, Loader2, Save, BookOpen, Plus } from "lucide-react"
+import { Send, Loader2, Save, BookOpen, Plus, Trash2 } from "lucide-react"
 import { useSession } from "next-auth/react"
 import { useToast } from "@/hooks/use-toast"
 import { FullScreenFeedbackView } from "@/components/ielts/FullScreenFeedbackView"
+import { IdeasGenerator } from "@/components/ielts/IdeasGenerator"
 import { Progress } from "@/components/ui/progress"
 import {
   Select,
@@ -26,6 +28,16 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 import type { IELTSFeedback } from "@/lib/types/ielts"
 
 interface Topic {
@@ -51,6 +63,7 @@ interface VocabSuggestion {
 export default function IELTSEssayPage() {
   const { data: session } = useSession()
   const { toast } = useToast()
+  const searchParams = useSearchParams()
   const [essayText, setEssayText] = useState("")
   const [essayTitle, setEssayTitle] = useState("")
   const [isAnalyzing, setIsAnalyzing] = useState(false)
@@ -69,9 +82,15 @@ export default function IELTSEssayPage() {
   const [selectedPromptId, setSelectedPromptId] = useState<string>("")
   const [vocabSuggestions, setVocabSuggestions] = useState<VocabSuggestion[]>([])
 
+  // Custom prompt state
+  const [isCustomPrompt, setIsCustomPrompt] = useState(false)
+  const [customPromptText, setCustomPromptText] = useState("")
+  const [promptInputAnimation, setPromptInputAnimation] = useState(false)
+
   // Draft auto-save
   const autoSaveTimerRef = useRef<NodeJS.Timeout | null>(null)
   const [currentDraftId, setCurrentDraftId] = useState<string | null>(null)
+  const [isLoadingDraft, setIsLoadingDraft] = useState(false)
 
   // Admin topic/prompt creation
   const [showAddTopicDialog, setShowAddTopicDialog] = useState(false)
@@ -82,8 +101,60 @@ export default function IELTSEssayPage() {
   const [newPromptDescription, setNewPromptDescription] = useState("")
   const [isCreating, setIsCreating] = useState(false)
 
+  // Admin topic/prompt deletion
+  const [deletingTopic, setDeletingTopic] = useState<Topic | null>(null)
+  const [deletingPrompt, setDeletingPrompt] = useState<Prompt | null>(null)
+  const [isDeleting, setIsDeleting] = useState(false)
+
   // Check if user is admin
   const isAdmin = session?.user?.role === "admin"
+
+  // Load draft from URL parameter
+  useEffect(() => {
+    const draftId = searchParams.get("draft")
+    if (!draftId || !session) return
+
+    const loadDraft = async () => {
+      setIsLoadingDraft(true)
+      try {
+        const response = await fetch(`/api/essay-drafts/${draftId}`)
+        if (!response.ok) {
+          throw new Error("Failed to load draft")
+        }
+
+        const draft = await response.json()
+
+        // Load the draft content
+        setEssayText(draft.content)
+        setEssayTitle(draft.title)
+        setCurrentDraftId(draft.id)
+
+        // Set topic and prompt if available
+        if (draft.topic_id) {
+          setSelectedTopicId(draft.topic_id)
+        }
+        if (draft.prompt_id) {
+          setSelectedPromptId(draft.prompt_id)
+        }
+
+        toast({
+          title: "Draft loaded",
+          description: "Continue writing your essay",
+        })
+      } catch (error) {
+        console.error("Error loading draft:", error)
+        toast({
+          title: "Error",
+          description: "Failed to load draft",
+          variant: "destructive",
+        })
+      } finally {
+        setIsLoadingDraft(false)
+      }
+    }
+
+    loadDraft()
+  }, [searchParams, session, toast])
 
   // Load topics on mount
   useEffect(() => {
@@ -116,6 +187,22 @@ export default function IELTSEssayPage() {
       return
     }
 
+    // Handle custom prompt selection
+    if (selectedTopicId === "__custom__") {
+      setIsCustomPrompt(true)
+      setPrompts([])
+      setSelectedPromptId("")
+      setVocabSuggestions([])
+      setCustomPromptText("")
+
+      // Trigger animation on prompt input
+      setPromptInputAnimation(true)
+      setTimeout(() => setPromptInputAnimation(false), 2000)
+      return
+    }
+
+    // Load prompts for regular topics
+    setIsCustomPrompt(false)
     const loadPrompts = async () => {
       try {
         const response = await fetch(`/api/essay-prompts?topic_id=${selectedTopicId}`)
@@ -127,6 +214,18 @@ export default function IELTSEssayPage() {
     }
     loadPrompts()
   }, [selectedTopicId])
+
+  // Auto-populate prompt text when ready-made prompt is selected
+  useEffect(() => {
+    if (!isCustomPrompt && selectedPromptId && selectedPromptId !== "general") {
+      const selectedPrompt = prompts.find((p) => p.id === selectedPromptId)
+      if (selectedPrompt) {
+        setCustomPromptText(selectedPrompt.description)
+      }
+    } else if (selectedPromptId === "general" || !selectedPromptId) {
+      setCustomPromptText("")
+    }
+  }, [selectedPromptId, prompts, isCustomPrompt])
 
   // Load vocab suggestions when prompt changes
   useEffect(() => {
@@ -420,6 +519,80 @@ export default function IELTSEssayPage() {
     }
   }
 
+  const handleDeleteTopic = async () => {
+    if (!deletingTopic) return
+
+    setIsDeleting(true)
+    try {
+      const response = await fetch(`/api/essay-topics/${deletingTopic.id}`, {
+        method: "DELETE",
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to delete topic")
+      }
+
+      toast({
+        title: "Topic deleted",
+        description: "Topic and all its prompts have been deleted successfully",
+      })
+
+      // Remove topic from state and clear selection
+      setTopics(topics.filter((t) => t.id !== deletingTopic.id))
+      if (selectedTopicId === deletingTopic.id) {
+        setSelectedTopicId("")
+        setSelectedPromptId("")
+        setPrompts([])
+      }
+      setDeletingTopic(null)
+    } catch (error) {
+      console.error("Error deleting topic:", error)
+      toast({
+        title: "Error",
+        description: "Failed to delete topic",
+        variant: "destructive",
+      })
+    } finally {
+      setIsDeleting(false)
+    }
+  }
+
+  const handleDeletePrompt = async () => {
+    if (!deletingPrompt) return
+
+    setIsDeleting(true)
+    try {
+      const response = await fetch(`/api/essay-prompts/${deletingPrompt.id}`, {
+        method: "DELETE",
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to delete prompt")
+      }
+
+      toast({
+        title: "Prompt deleted",
+        description: "Prompt has been deleted successfully",
+      })
+
+      // Remove prompt from state and clear selection
+      setPrompts(prompts.filter((p) => p.id !== deletingPrompt.id))
+      if (selectedPromptId === deletingPrompt.id) {
+        setSelectedPromptId("")
+      }
+      setDeletingPrompt(null)
+    } catch (error) {
+      console.error("Error deleting prompt:", error)
+      toast({
+        title: "Error",
+        description: "Failed to delete prompt",
+        variant: "destructive",
+      })
+    } finally {
+      setIsDeleting(false)
+    }
+  }
+
   return (
     <>
       {showFeedback && feedback && (
@@ -450,7 +623,7 @@ export default function IELTSEssayPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="title">Essay Prompt</Label>
+              <Label htmlFor="title">Essay Title (Optional)</Label>
               <Input
                 id="title"
                 placeholder="e.g., Technology and Education"
@@ -458,6 +631,36 @@ export default function IELTSEssayPage() {
                 onChange={(e) => setEssayTitle(e.target.value)}
                 disabled={isAnalyzing}
               />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="prompt" className="flex items-center gap-2">
+                Essay Prompt {isCustomPrompt && <span className="text-destructive">*</span>}
+              </Label>
+              <Textarea
+                id="prompt"
+                placeholder={
+                  isCustomPrompt
+                    ? "Enter your custom essay prompt here..."
+                    : "Select a topic and prompt from the right panel, or the selected prompt will appear here"
+                }
+                value={customPromptText}
+                onChange={(e) => setCustomPromptText(e.target.value)}
+                disabled={!isCustomPrompt || isAnalyzing}
+                className={`min-h-[100px] transition-all duration-500 ${
+                  promptInputAnimation ? "ring-2 ring-primary animate-pulse" : ""
+                } ${!isCustomPrompt ? "bg-muted/50 cursor-not-allowed" : ""}`}
+              />
+              {isCustomPrompt && !customPromptText.trim() && (
+                <p className="text-xs text-destructive">
+                  Please enter a custom prompt to generate ideas or submit your essay
+                </p>
+              )}
+              {!isCustomPrompt && customPromptText && (
+                <p className="text-xs text-muted-foreground">
+                  ✓ Prompt loaded from selected topic
+                </p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -575,6 +778,9 @@ export default function IELTSEssayPage() {
                   <SelectValue placeholder="Choose a topic..." />
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem value="__custom__" className="text-primary font-medium">
+                    Custom Prompt
+                  </SelectItem>
                   {topics.map((topic) => (
                     <SelectItem key={topic.id} value={topic.id}>
                       {topic.name}
@@ -591,13 +797,28 @@ export default function IELTSEssayPage() {
                 </SelectContent>
               </Select>
               {selectedTopicId && (
-                <p className="text-xs text-muted-foreground">
-                  {topics.find((t) => t.id === selectedTopicId)?.description}
-                </p>
+                <div className="flex items-start justify-between gap-2">
+                  <p className="text-xs text-muted-foreground flex-1">
+                    {topics.find((t) => t.id === selectedTopicId)?.description}
+                  </p>
+                  {isAdmin && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-6 px-2 text-destructive hover:text-destructive"
+                      onClick={() => {
+                        const topic = topics.find((t) => t.id === selectedTopicId)
+                        if (topic) setDeletingTopic(topic)
+                      }}
+                    >
+                      <Trash2 className="h-3 w-3" />
+                    </Button>
+                  )}
+                </div>
               )}
             </div>
 
-            {selectedTopicId && (
+            {selectedTopicId && !isCustomPrompt && (
               <div className="space-y-2">
                 <Label htmlFor="prompt">Essay Prompt</Label>
                 <Select
@@ -631,14 +852,37 @@ export default function IELTSEssayPage() {
                   </SelectContent>
                 </Select>
                 {selectedPromptId && selectedPromptId !== "general" && (
-                  <p className="text-xs text-muted-foreground">
-                    {prompts.find((p) => p.id === selectedPromptId)?.description}
-                  </p>
+                  <div className="flex items-start justify-between gap-2">
+                    <p className="text-xs text-muted-foreground flex-1">
+                      {prompts.find((p) => p.id === selectedPromptId)?.description}
+                    </p>
+                    {isAdmin && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-6 px-2 text-destructive hover:text-destructive"
+                        onClick={() => {
+                          const prompt = prompts.find((p) => p.id === selectedPromptId)
+                          if (prompt) setDeletingPrompt(prompt)
+                        }}
+                      >
+                        <Trash2 className="h-3 w-3" />
+                      </Button>
+                    )}
+                  </div>
                 )}
               </div>
             )}
 
-            {selectedPromptId && vocabSuggestions.length > 0 && (
+            {isCustomPrompt && (
+              <div className="space-y-2">
+                <p className="text-sm text-muted-foreground">
+                  You've selected custom prompt mode. Enter your essay prompt in the left panel to get started.
+                </p>
+              </div>
+            )}
+
+            {!isCustomPrompt && selectedPromptId && vocabSuggestions.length > 0 && (
               <div className="space-y-2">
                 <Label>Vocabulary & Grammar Suggestions</Label>
                 <div className="rounded-lg border p-4 max-h-[300px] overflow-y-auto">
@@ -658,7 +902,7 @@ export default function IELTSEssayPage() {
               </div>
             )}
 
-            {selectedPromptId === "general" && (
+            {!isCustomPrompt && selectedPromptId === "general" && (
               <div className="rounded-lg border p-4">
                 <p className="text-sm text-muted-foreground">
                   General vocabulary and grammar structures for this topic will be displayed here.
@@ -666,7 +910,16 @@ export default function IELTSEssayPage() {
                 </p>
               </div>
             )}
-
+            {/* Ideas Generator */}
+            {((selectedPromptId && selectedPromptId !== "general") || (isCustomPrompt && customPromptText.trim())) && (
+              <div className="pt-4 border-t">
+                <IdeasGenerator
+                  essayPrompt={customPromptText || prompts.find((p) => p.id === selectedPromptId)?.description || ""}
+                  level={selectedLevel}
+                  disabled={isAnalyzing || (isCustomPrompt && !customPromptText.trim())}
+                />
+              </div>
+            )}
             {!selectedTopicId && (
               <div className="flex flex-col items-center justify-center py-8 text-center">
                 <BookOpen className="h-12 w-12 text-muted-foreground mb-3" />
@@ -796,6 +1049,64 @@ export default function IELTSEssayPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Delete Topic Confirmation */}
+      <AlertDialog open={!!deletingTopic} onOpenChange={(open) => !open && setDeletingTopic(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Topic?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete "{deletingTopic?.name}"? This will permanently delete the topic and ALL associated prompts and vocabulary suggestions. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteTopic}
+              disabled={isDeleting}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {isDeleting ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Deleting...
+                </>
+              ) : (
+                "Delete Topic"
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Delete Prompt Confirmation */}
+      <AlertDialog open={!!deletingPrompt} onOpenChange={(open) => !open && setDeletingPrompt(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Prompt?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete "{deletingPrompt?.title}"? This will permanently delete the prompt and all associated vocabulary suggestions. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeletePrompt}
+              disabled={isDeleting}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {isDeleting ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Deleting...
+                </>
+              ) : (
+                "Delete Prompt"
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   )
 }

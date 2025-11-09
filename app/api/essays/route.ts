@@ -13,12 +13,14 @@ export async function GET(request: Request) {
     }
 
     const { searchParams } = new URL(request.url)
-    const limit = Number.parseInt(searchParams.get("limit") || "10")
+    const limit = Number.parseInt(searchParams.get("limit") || "12")
+    const page = Number.parseInt(searchParams.get("page") || "1")
+    const offset = (page - 1) * limit
     const userId = session.user.id as string
 
-    const essays = await getEssaysByUserId(userId, limit)
+    const result = await getEssaysByUserId(userId, { limit, offset })
 
-    return NextResponse.json(essays)
+    return NextResponse.json(result)
   } catch (error) {
     console.error("Error fetching essays:", error)
     return NextResponse.json({ message: "Something went wrong" }, { status: 500 })
