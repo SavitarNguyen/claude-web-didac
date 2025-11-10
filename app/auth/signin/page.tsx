@@ -12,7 +12,6 @@ import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useToast } from "@/hooks/use-toast"
 import { Mail } from "lucide-react"
-import Image from "next/image"
 
 export default function SignIn() {
   const router = useRouter()
@@ -181,40 +180,10 @@ export default function SignIn() {
                     <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
                   </div>
                 </div>
-                <Button 
-                  variant="outline" 
-                  className="w-full" 
-                  onClick={async () => {
-                    try {
-                      console.log("Starting Google sign-in...")
-                      const result = await signIn("google", { 
-                        callbackUrl: "/",
-                        redirect: false 
-                      })
-                      console.log("Google sign-in result:", result)
-                      
-                      if (result?.error) {
-                        toast({
-                          title: "Error",
-                          description: `Google sign-in failed: ${result.error}`,
-                          variant: "destructive",
-                        })
-                      } else if (result?.ok) {
-                        router.push("/")
-                        toast({
-                          title: "Success",
-                          description: "Signed in with Google successfully",
-                        })
-                      }
-                    } catch (error) {
-                      console.error("Google sign-in error:", error)
-                      toast({
-                        title: "Error",
-                        description: "Failed to sign in with Google",
-                        variant: "destructive",
-                      })
-                    }
-                  }}
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={() => signIn("google", { callbackUrl: "/" })}
                 >
                   <Mail className="mr-2 h-4 w-4" />
                   Google
@@ -284,40 +253,10 @@ export default function SignIn() {
                     <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
                   </div>
                 </div>
-                <Button 
-                  variant="outline" 
-                  className="w-full" 
-                  onClick={async () => {
-                    try {
-                      console.log("Starting Google sign-in...")
-                      const result = await signIn("google", { 
-                        callbackUrl: "/",
-                        redirect: false 
-                      })
-                      console.log("Google sign-in result:", result)
-                      
-                      if (result?.error) {
-                        toast({
-                          title: "Error",
-                          description: `Google sign-in failed: ${result.error}`,
-                          variant: "destructive",
-                        })
-                      } else if (result?.ok) {
-                        router.push("/")
-                        toast({
-                          title: "Success",
-                          description: "Signed in with Google successfully",
-                        })
-                      }
-                    } catch (error) {
-                      console.error("Google sign-in error:", error)
-                      toast({
-                        title: "Error",
-                        description: "Failed to sign in with Google",
-                        variant: "destructive",
-                      })
-                    }
-                  }}
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={() => signIn("google", { callbackUrl: "/" })}
                 >
                   <Mail className="mr-2 h-4 w-4" />
                   Google
