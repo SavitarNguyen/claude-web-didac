@@ -18,7 +18,7 @@ import {
   Article,
   EmojiEvents,
   Download as DownloadIcon,
-  BookOpen,
+  MenuBook,
 } from "@mui/icons-material";
 import { IELTSFeedback } from "@/lib/types/ielts";
 import { SentenceWithCorrections } from "./SentenceWithCorrections";
@@ -265,7 +265,7 @@ export function FullScreenFeedbackView({
               <Tab label="TA/CC (Paragraph)" icon={<Article />} iconPosition="start" />
               <Tab
                 label="Vocabulary"
-                icon={<BookOpen />}
+                icon={<MenuBook />}
                 iconPosition="start"
               />
             </Tabs>
@@ -329,10 +329,14 @@ export function FullScreenFeedbackView({
 
             {/* Tab 3: Vocabulary */}
             {rightPanelTab === 3 && (
-              <VocabularyPanel
-                selectedVocabulary={feedback.selectedVocabulary || []}
-                essayId={undefined} // Will be passed when essay is saved
-              />
+              <>
+                {console.log("Feedback object:", feedback)}
+                {console.log("Selected Vocabulary:", feedback.selectedVocabulary)}
+                <VocabularyPanel
+                  selectedVocabulary={feedback.selectedVocabulary || []}
+                  essayId={undefined} // Will be passed when essay is saved
+                />
+              </>
             )}
           </Box>
         </Box>

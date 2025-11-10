@@ -1,6 +1,6 @@
 "use client"
 
-import { BookOpen, Home, Pencil, Mic, BarChart, Settings, LogOut, Moon, Sun, Shield, Smartphone, FileText, Library, ChevronDown, PenTool, FolderOpen } from "lucide-react"
+import { BookOpen, Home, Pencil, Mic, BarChart, Settings, LogOut, Moon, Sun, Shield, Smartphone, FileText, Library, ChevronDown, PenTool, FolderOpen, BookMarked } from "lucide-react"
 import { usePathname } from "next/navigation"
 import { useTheme } from "next-themes"
 import { useSession, signOut } from "next-auth/react"
@@ -47,6 +47,11 @@ export function AppSidebar() {
       title: "Flashcards",
       icon: BookOpen,
       href: "/flashcards",
+    },
+    {
+      title: "My Vocabulary",
+      icon: BookMarked,
+      href: "/my-vocabulary",
     },
     {
       title: "Speaking Practice",
