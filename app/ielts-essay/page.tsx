@@ -343,7 +343,7 @@ export default function IELTSEssayPage() {
       const data = await response.json()
 
       setProgress(75)
-      setStatusMessage("Finalizing feedback...")
+      setStatusMessage("Selecting vocabulary for learning...")
 
       // Parse the feedback
       try {
