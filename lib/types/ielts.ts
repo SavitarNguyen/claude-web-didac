@@ -87,6 +87,19 @@ export interface IELTSBandScore {
   evidence: string[]; // Specific quotes/examples from essay
 }
 
+// Selected vocabulary item for learning (3-6 items chosen from all vocabSuggestions)
+export interface SelectedVocabulary {
+  term: string; // The vocabulary word/phrase/collocation
+  type: 'word' | 'phrase' | 'collocation'; // Type of vocabulary
+  original: string; // The word/phrase it replaces from student's essay
+  definition: string; // Brief English definition
+  explanation: string; // Why this is better/useful
+  exampleSentence: string; // Example from the corrected essay
+  sentenceId: string; // Reference to which sentence it came from
+  ieltsLevel: string; // e.g., "Band 6.5-7.5"
+  tags: string[]; // Topic tags (e.g., ["environment", "academic"])
+}
+
 export interface IELTSFeedback {
   topic: string;
   overallBand: number;
@@ -99,6 +112,7 @@ export interface IELTSFeedback {
   strengths: string[];
   improvements: string[];
   fullReport: string;
+  selectedVocabulary?: SelectedVocabulary[]; // 3-6 key vocabulary items for learning
 }
 
 export interface InteractiveFeedbackState {

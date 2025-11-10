@@ -3,6 +3,8 @@ import { getServerSession } from "next-auth/next"
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 import { getEssaysByUserId, createEssay } from "@/lib/db/essays"
 import { incrementProgress } from "@/lib/db/progress"
+import { selectVocabularyForLearning } from "@/lib/ielts/vocabularySelector"
+import { IELTSFeedback } from "@/lib/types/ielts"
 
 export async function GET(request: Request) {
   try {
@@ -37,12 +39,32 @@ export async function POST(request: Request) {
 
     const { title, content, correctedContent, score, feedback, level } = await request.json()
 
+    // If feedback exists and is IELTS feedback, add vocabulary selection
+    let enhancedFeedback = feedback
+    if (feedback && feedback.sentences && feedback.sentences.length > 0) {
+      try {
+        const ieltsFeedback = feedback as IELTSFeedback
+        const selectedVocabulary = await selectVocabularyForLearning(ieltsFeedback, level)
+
+        // Add selected vocabulary to feedback
+        enhancedFeedback = {
+          ...ieltsFeedback,
+          selectedVocabulary,
+        }
+
+        console.log(`Selected ${selectedVocabulary.length} vocabulary items for essay: ${title}`)
+      } catch (vocabError) {
+        console.error("Error selecting vocabulary, continuing without it:", vocabError)
+        // Continue without vocabulary selection if it fails
+      }
+    }
+
     const result = await createEssay({
       title,
       content,
       correctedContent,
       score,
-      feedback,
+      feedback: enhancedFeedback,
       level,
       userId: session.user.id as string,
       isFlagged: false,
@@ -58,7 +80,7 @@ export async function POST(request: Request) {
         content,
         correctedContent,
         score,
-        feedback,
+        feedback: enhancedFeedback,
         level,
         userId: session.user.id,
         isFlagged: false,
