@@ -254,6 +254,7 @@ export default function MyVocabularyPage() {
                   color="warning"
                   sx={{ mt: 1 }}
                   fullWidth
+                  onClick={() => router.push("/my-vocabulary/practice")}
                 >
                   Practice Now
                 </Button>
