@@ -18,6 +18,7 @@ import {
   Article,
   EmojiEvents,
   Download as DownloadIcon,
+  BookOpen,
 } from "@mui/icons-material";
 import { IELTSFeedback } from "@/lib/types/ielts";
 import { SentenceWithCorrections } from "./SentenceWithCorrections";
@@ -26,6 +27,7 @@ import { ParagraphAnalysisView } from "./ParagraphAnalysisView";
 import { BandScoresWithEvidence } from "./BandScoresWithEvidence";
 import { ParagraphWithDiff } from "./ParagraphWithDiff";
 import { IELTSFeedbackLoadingSkeleton } from "./IELTSFeedbackLoadingSkeleton";
+import { VocabularyPanel } from "./VocabularyPanel";
 
 interface FullScreenFeedbackViewProps {
   feedback: IELTSFeedback | null;
@@ -261,6 +263,11 @@ export function FullScreenFeedbackView({
               />
               <Tab label="Band Scores" icon={<Assessment />} iconPosition="start" />
               <Tab label="TA/CC (Paragraph)" icon={<Article />} iconPosition="start" />
+              <Tab
+                label="Vocabulary"
+                icon={<BookOpen />}
+                iconPosition="start"
+              />
             </Tabs>
           </Paper>
 
@@ -318,6 +325,14 @@ export function FullScreenFeedbackView({
                   onParagraphClick={handleParagraphNumberClick}
                 />
               </Box>
+            )}
+
+            {/* Tab 3: Vocabulary */}
+            {rightPanelTab === 3 && (
+              <VocabularyPanel
+                selectedVocabulary={feedback.selectedVocabulary || []}
+                essayId={undefined} // Will be passed when essay is saved
+              />
             )}
           </Box>
         </Box>
