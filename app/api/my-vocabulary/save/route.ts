@@ -328,10 +328,10 @@ async function saveTags(supabase: any, vocabularyId: string, tags: string[]) {
 }
 
 /**
- * Gets initial review date (10 minutes from now for new vocabulary)
+ * Gets initial review date (immediate for new vocabulary so they can practice right away)
  */
 function getInitialReviewDate(): string {
   const now = new Date();
-  now.setMinutes(now.getMinutes() + 10);
+  // Set to now so vocabulary can be practiced immediately
   return now.toISOString();
 }

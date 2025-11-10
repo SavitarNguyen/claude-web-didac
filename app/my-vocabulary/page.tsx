@@ -18,12 +18,11 @@ import {
   CardContent,
   CardActions,
   Grid,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
   Divider,
   Tooltip,
+  Collapse,
+  Menu,
+  MenuItem,
 } from "@mui/material";
 import {
   BookmarkRemove,
@@ -32,7 +31,10 @@ import {
   TrendingUp,
   LocalLibrary,
   EmojiEvents,
-  FilterList,
+  ExpandMore,
+  ExpandLess,
+  OpenInNew,
+  ArrowDropDown,
 } from "@mui/icons-material";
 
 interface SavedVocabularyItem {
@@ -60,9 +62,11 @@ interface SavedVocabularyItem {
   exercises_correct: number;
   created_at: string;
   essay?: {
+    id?: string;
     title: string;
     created_at: string;
   };
+  essay_id?: string;
 }
 
 interface VocabularyStatistics {
@@ -71,6 +75,13 @@ interface VocabularyStatistics {
   learning: number;
   practiced: number;
   mastered: number;
+}
+
+interface EssaySource {
+  id: string;
+  title: string;
+  wordCount: number;
+  createdAt: string;
 }
 
 export default function MyVocabularyPage() {
@@ -87,9 +98,18 @@ export default function MyVocabularyPage() {
   const [dueCount, setDueCount] = useState<number>(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [filter, setFilter] = useState<"all" | "due">("all");
   const [playingAudio, setPlayingAudio] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  // New state for filters and collapsible cards
+  const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
+  const [masteryFilter, setMasteryFilter] = useState<string>("all");
+  const [essayFilter, setEssayFilter] = useState<string | null>(null);
+  const [essaySources, setEssaySources] = useState<EssaySource[]>([]);
+
+  // Menu state for dropdowns
+  const [statusMenuAnchor, setStatusMenuAnchor] = useState<null | HTMLElement>(null);
+  const [essayMenuAnchor, setEssayMenuAnchor] = useState<null | HTMLElement>(null);
 
   // Redirect if not authenticated
   useEffect(() => {
@@ -98,26 +118,43 @@ export default function MyVocabularyPage() {
     }
   }, [status, router]);
 
-  // Fetch vocabulary
+  // Fetch vocabulary and essay sources
   useEffect(() => {
     if (status === "authenticated") {
       fetchVocabulary();
+      fetchEssaySources();
     }
-  }, [status, filter]);
+  }, [status, masteryFilter, essayFilter]);
 
   const fetchVocabulary = async () => {
     setLoading(true);
     setError(null);
 
     try {
-      const response = await fetch(`/api/my-vocabulary?filter=${filter}&limit=100`);
+      let url = "/api/my-vocabulary?limit=100";
+
+      // Apply essay filter first (server-side)
+      if (essayFilter) {
+        url += `&filter=by_essay&essayId=${essayFilter}`;
+      }
+
+      const response = await fetch(url);
 
       if (!response.ok) {
         throw new Error("Failed to fetch vocabulary");
       }
 
       const data = await response.json();
-      setVocabularyList(data.vocabulary || []);
+      let vocabList = data.vocabulary || [];
+
+      // Apply mastery level filter (client-side)
+      if (masteryFilter && masteryFilter !== "all") {
+        vocabList = vocabList.filter((item: SavedVocabularyItem) =>
+          item.mastery_level === masteryFilter
+        );
+      }
+
+      setVocabularyList(vocabList);
       setStatistics(data.statistics || statistics);
       setDueCount(data.dueCount || 0);
     } catch (err) {
@@ -125,6 +162,24 @@ export default function MyVocabularyPage() {
       setError(err instanceof Error ? err.message : "Failed to load vocabulary");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchEssaySources = async () => {
+    try {
+      const response = await fetch("/api/my-vocabulary/essays");
+
+      if (!response.ok) {
+        console.error("Failed to fetch essay sources - status:", response.status);
+        return;
+      }
+
+      const data = await response.json();
+      console.log("Essay sources API response:", data);
+      console.log("Number of essays:", data.essays?.length || 0);
+      setEssaySources(data.essays || []);
+    } catch (err) {
+      console.error("Error fetching essay sources:", err);
     }
   };
 
@@ -148,6 +203,9 @@ export default function MyVocabularyPage() {
       // Remove from list
       setVocabularyList(vocabularyList.filter((v) => v.id !== id));
       setStatistics((prev) => ({ ...prev, total: prev.total - 1 }));
+
+      // Refresh essay sources
+      fetchEssaySources();
     } catch (err) {
       console.error("Error deleting vocabulary:", err);
       alert("Failed to delete vocabulary. Please try again.");
@@ -173,6 +231,52 @@ export default function MyVocabularyPage() {
     }
   };
 
+  // Toggle card expansion
+  const toggleCardExpansion = (id: string) => {
+    setExpandedCards((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
+  };
+
+  // Handle menu open/close
+  const handleStatusMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setStatusMenuAnchor(event.currentTarget);
+  };
+
+  const handleEssayMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setEssayMenuAnchor(event.currentTarget);
+  };
+
+  const handleStatusMenuClose = () => {
+    setStatusMenuAnchor(null);
+  };
+
+  const handleEssayMenuClose = () => {
+    setEssayMenuAnchor(null);
+  };
+
+  // Handle filter selection
+  const handleStatusFilterSelect = (status: string) => {
+    setMasteryFilter(status);
+    handleStatusMenuClose();
+  };
+
+  const handleEssayFilterSelect = (essayId: string | null) => {
+    setEssayFilter(essayId);
+    handleEssayMenuClose();
+  };
+
+  // Navigate to essay
+  const navigateToEssay = (essayId: string) => {
+    router.push(`/ielts/essay-corrections/${essayId}`);
+  };
+
   // Get mastery level color
   const getMasteryColor = (level: string) => {
     switch (level) {
@@ -192,6 +296,19 @@ export default function MyVocabularyPage() {
   // Get mastery level label
   const getMasteryLabel = (level: string) => {
     return level.charAt(0).toUpperCase() + level.slice(1);
+  };
+
+  // Get status display text
+  const getStatusDisplayText = () => {
+    if (masteryFilter === "all") return "All";
+    return getMasteryLabel(masteryFilter);
+  };
+
+  // Get essay display text
+  const getEssayDisplayText = () => {
+    if (!essayFilter) return "All Essays";
+    const essay = essaySources.find((e) => e.id === essayFilter);
+    return essay ? essay.title : "All Essays";
   };
 
   if (status === "loading" || loading) {
@@ -221,7 +338,47 @@ export default function MyVocabularyPage() {
         </Typography>
       </Box>
 
-      {/* Statistics Cards */}
+      {/* Practice Now Alert - Prominent */}
+      {statistics.total > 0 && (
+        <Paper
+          sx={{
+            mb: 3,
+            p: 2,
+            bgcolor: "#fff3e0",
+            border: "2px solid #f57c00",
+          }}
+        >
+          <Stack direction="row" spacing={2} alignItems="center">
+            <Button
+              variant="contained"
+              color="warning"
+              size="large"
+              onClick={() => router.push("/my-vocabulary/practice")}
+              sx={{
+                fontWeight: 600,
+                px: 4,
+                py: 1.5,
+                fontSize: "1.1rem",
+                minWidth: 180,
+              }}
+            >
+              Practice Now
+            </Button>
+            <Box sx={{ flex: 1 }}>
+              <Typography variant="h6" sx={{ fontWeight: 600, mb: 0.5 }}>
+                {dueCount > 0
+                  ? `${dueCount} word${dueCount > 1 ? "s" : ""} ready for review!`
+                  : "Practice your vocabulary!"}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Keep your learning momentum going - practice makes perfect
+              </Typography>
+            </Box>
+          </Stack>
+        </Paper>
+      )}
+
+      {/* Statistics Cards - Display Only */}
       <Grid container spacing={2} sx={{ mb: 4 }}>
         <Grid item xs={12} sm={6} md={2.4}>
           <Card>
@@ -238,27 +395,15 @@ export default function MyVocabularyPage() {
         </Grid>
 
         <Grid item xs={12} sm={6} md={2.4}>
-          <Card sx={{ bgcolor: dueCount > 0 ? "#fff3e0" : undefined }}>
+          <Card>
             <CardContent>
               <Stack direction="row" alignItems="center" spacing={1} mb={1}>
-                <TrendingUp color="warning" />
-                <Typography variant="h4">{dueCount}</Typography>
+                <School />
+                <Typography variant="h4">{statistics.new}</Typography>
               </Stack>
               <Typography variant="body2" color="text.secondary">
-                Due for Review
+                New
               </Typography>
-              {dueCount > 0 && (
-                <Button
-                  size="small"
-                  variant="contained"
-                  color="warning"
-                  sx={{ mt: 1 }}
-                  fullWidth
-                  onClick={() => router.push("/my-vocabulary/practice")}
-                >
-                  Practice Now
-                </Button>
-              )}
             </CardContent>
           </Card>
         </Grid>
@@ -267,7 +412,7 @@ export default function MyVocabularyPage() {
           <Card>
             <CardContent>
               <Stack direction="row" alignItems="center" spacing={1} mb={1}>
-                <School />
+                <School color="info" />
                 <Typography variant="h4">{statistics.learning}</Typography>
               </Stack>
               <Typography variant="body2" color="text.secondary">
@@ -306,20 +451,118 @@ export default function MyVocabularyPage() {
         </Grid>
       </Grid>
 
-      {/* Filter Controls */}
+      {/* Active Filters - Dropdown Based */}
       <Paper sx={{ p: 2, mb: 3 }}>
-        <Stack direction="row" alignItems="center" spacing={2}>
-          <FilterList />
-          <Typography variant="subtitle1">Filter:</Typography>
-          <FormControl size="small" sx={{ minWidth: 200 }}>
-            <Select
-              value={filter}
-              onChange={(e) => setFilter(e.target.value as "all" | "due")}
+        <Stack direction="row" spacing={2} alignItems="center" flexWrap="wrap">
+          <Typography variant="body1" sx={{ fontWeight: 600 }}>
+            Active Filters:
+          </Typography>
+
+          {/* By Status Dropdown */}
+          <Button
+            variant="outlined"
+            endIcon={<ArrowDropDown />}
+            onClick={handleStatusMenuOpen}
+            sx={{ minWidth: 150 }}
+          >
+            By Status: {getStatusDisplayText()}
+          </Button>
+          <Menu
+            anchorEl={statusMenuAnchor}
+            open={Boolean(statusMenuAnchor)}
+            onClose={handleStatusMenuClose}
+          >
+            <MenuItem
+              onClick={() => handleStatusFilterSelect("all")}
+              selected={masteryFilter === "all"}
             >
-              <MenuItem value="all">All Vocabulary</MenuItem>
-              <MenuItem value="due">Due for Review ({dueCount})</MenuItem>
-            </Select>
-          </FormControl>
+              All
+            </MenuItem>
+            <MenuItem
+              onClick={() => handleStatusFilterSelect("new")}
+              selected={masteryFilter === "new"}
+            >
+              New
+            </MenuItem>
+            <MenuItem
+              onClick={() => handleStatusFilterSelect("learning")}
+              selected={masteryFilter === "learning"}
+            >
+              Learning
+            </MenuItem>
+            <MenuItem
+              onClick={() => handleStatusFilterSelect("practiced")}
+              selected={masteryFilter === "practiced"}
+            >
+              Practiced
+            </MenuItem>
+            <MenuItem
+              onClick={() => handleStatusFilterSelect("mastered")}
+              selected={masteryFilter === "mastered"}
+            >
+              Mastered
+            </MenuItem>
+          </Menu>
+
+          {/* By Essay Dropdown */}
+          <Button
+            variant="outlined"
+            endIcon={<ArrowDropDown />}
+            onClick={handleEssayMenuOpen}
+            sx={{ minWidth: 200 }}
+          >
+            By Essay: {getEssayDisplayText()}
+          </Button>
+          <Menu
+            anchorEl={essayMenuAnchor}
+            open={Boolean(essayMenuAnchor)}
+            onClose={handleEssayMenuClose}
+            PaperProps={{
+              style: {
+                maxHeight: 400,
+                width: '350px',
+              },
+            }}
+          >
+            <MenuItem
+              onClick={() => handleEssayFilterSelect(null)}
+              selected={essayFilter === null}
+            >
+              All Essays
+            </MenuItem>
+            <Divider />
+            {essaySources.map((essay) => {
+              const essayDate = new Date(essay.createdAt).toLocaleDateString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric'
+              });
+
+              return (
+                <MenuItem
+                  key={essay.id}
+                  onClick={() => handleEssayFilterSelect(essay.id)}
+                  selected={essayFilter === essay.id}
+                >
+                  <Box sx={{ width: '100%' }}>
+                    <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                      {essay.title}
+                    </Typography>
+                    <Stack direction="row" spacing={1} alignItems="center" mt={0.5}>
+                      <Typography variant="caption" color="text.secondary">
+                        {essayDate}
+                      </Typography>
+                      <Chip
+                        label={`${essay.wordCount} words`}
+                        size="small"
+                        sx={{ height: 18 }}
+                      />
+                    </Stack>
+                  </Box>
+                </MenuItem>
+              );
+            })}
+          </Menu>
         </Stack>
       </Paper>
 
@@ -335,142 +578,189 @@ export default function MyVocabularyPage() {
         <Paper sx={{ p: 6, textAlign: "center" }}>
           <LocalLibrary sx={{ fontSize: 64, color: "text.disabled", mb: 2 }} />
           <Typography variant="h6" gutterBottom>
-            No vocabulary saved yet
+            No vocabulary found
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-            {filter === "due"
-              ? "You don't have any vocabulary due for review right now."
+            {(masteryFilter !== "all" || essayFilter)
+              ? "No vocabulary matches your current filters. Try adjusting your filters."
               : "Start practicing IELTS essays and save vocabulary to build your collection!"}
           </Typography>
-          <Button variant="contained" onClick={() => router.push("/ielts-essay")}>
-            Practice IELTS Essay
-          </Button>
+          {masteryFilter === "all" && !essayFilter && (
+            <Button variant="contained" onClick={() => router.push("/ielts-essay")}>
+              Practice IELTS Essay
+            </Button>
+          )}
         </Paper>
       )}
 
-      {/* Vocabulary List */}
+      {/* Vocabulary List - Collapsible Cards */}
       <Grid container spacing={2}>
-        {vocabularyList.map((item) => (
-          <Grid item xs={12} md={6} lg={4} key={item.id}>
-            <Card
-              sx={{
-                height: "100%",
-                display: "flex",
-                flexDirection: "column",
-                transition: "all 0.2s ease",
-                "&:hover": {
-                  boxShadow: 4,
-                  transform: "translateY(-4px)",
-                },
-              }}
-            >
-              <CardContent sx={{ flex: 1 }}>
-                {/* Word + Pronunciation */}
-                <Stack direction="row" alignItems="center" justifyContent="space-between" mb={1}>
-                  <Typography variant="h6" sx={{ color: "primary.main", fontWeight: 600 }}>
-                    {item.vocabulary.word}
-                  </Typography>
-                  <Tooltip title="Listen to pronunciation">
+        {vocabularyList.map((item) => {
+          const isExpanded = expandedCards.has(item.id);
+
+          return (
+            <Grid item xs={12} md={6} lg={4} key={item.id}>
+              <Card
+                sx={{
+                  height: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  transition: "all 0.2s ease",
+                  "&:hover": {
+                    boxShadow: 4,
+                  },
+                }}
+              >
+                <CardContent sx={{ flex: 1, pb: 1 }}>
+                  {/* Collapsed View - Always Visible */}
+                  <Stack direction="row" alignItems="center" justifyContent="space-between" mb={1}>
+                    <Typography variant="h6" sx={{ color: "primary.main", fontWeight: 600 }}>
+                      {item.vocabulary.word}
+                    </Typography>
                     <IconButton
                       size="small"
-                      onClick={() => handlePronounce(item.vocabulary.word)}
-                      disabled={playingAudio === item.vocabulary.word}
+                      onClick={() => toggleCardExpansion(item.id)}
                     >
-                      {playingAudio === item.vocabulary.word ? (
-                        <CircularProgress size={20} />
-                      ) : (
-                        <VolumeUp fontSize="small" />
-                      )}
+                      {isExpanded ? <ExpandLess /> : <ExpandMore />}
                     </IconButton>
-                  </Tooltip>
-                </Stack>
+                  </Stack>
 
-                {/* Tags */}
-                <Stack direction="row" spacing={0.5} mb={2} flexWrap="wrap" gap={0.5}>
-                  <Chip
-                    label={getMasteryLabel(item.mastery_level)}
+                  {/* Tags - Always Visible */}
+                  <Stack direction="row" spacing={0.5} mb={1} flexWrap="wrap" gap={0.5}>
+                    <Chip
+                      label={getMasteryLabel(item.mastery_level)}
+                      size="small"
+                      color={getMasteryColor(item.mastery_level) as any}
+                    />
+                    {item.vocabulary.ielts_band_level && (
+                      <Chip
+                        label={item.vocabulary.ielts_band_level}
+                        size="small"
+                        color="secondary"
+                        variant="outlined"
+                      />
+                    )}
+                    {item.vocabulary.word_type && (
+                      <Chip label={item.vocabulary.word_type} size="small" variant="outlined" />
+                    )}
+                  </Stack>
+
+                  {/* Expanded View - Collapsible */}
+                  <Collapse in={isExpanded}>
+                    <Box sx={{ mt: 2 }}>
+                      {/* Pronunciation Button */}
+                      <Stack direction="row" alignItems="center" spacing={1} mb={2}>
+                        <Tooltip title="Listen to pronunciation">
+                          <IconButton
+                            size="small"
+                            onClick={() => handlePronounce(item.vocabulary.word)}
+                            disabled={playingAudio === item.vocabulary.word}
+                            color="primary"
+                          >
+                            {playingAudio === item.vocabulary.word ? (
+                              <CircularProgress size={20} />
+                            ) : (
+                              <VolumeUp fontSize="small" />
+                            )}
+                          </IconButton>
+                        </Tooltip>
+                        <Typography variant="caption" color="text.secondary">
+                          Click to hear pronunciation
+                        </Typography>
+                      </Stack>
+
+                      {/* Category Tags */}
+                      {item.vocabulary.vocabulary_definition_tags.length > 0 && (
+                        <Stack direction="row" spacing={0.5} mb={2} flexWrap="wrap" gap={0.5}>
+                          {item.vocabulary.vocabulary_definition_tags.map((tagObj, idx) => (
+                            <Chip
+                              key={idx}
+                              label={tagObj.tag.name}
+                              size="small"
+                              variant="outlined"
+                              sx={{ textTransform: "capitalize" }}
+                            />
+                          ))}
+                        </Stack>
+                      )}
+
+                      {/* Definition */}
+                      <Typography variant="body2" color="text.secondary" paragraph>
+                        <strong>Definition:</strong> {item.vocabulary.definition}
+                      </Typography>
+
+                      {/* Vietnamese Translation */}
+                      {item.vocabulary.vietnamese_translation && (
+                        <Typography variant="body2" color="text.secondary" paragraph>
+                          <strong>Vietnamese:</strong> {item.vocabulary.vietnamese_translation}
+                        </Typography>
+                      )}
+
+                      {/* Example Sentence */}
+                      <Paper variant="outlined" sx={{ p: 1.5, bgcolor: "#f5f5f5", mb: 2 }}>
+                        <Typography variant="caption" color="text.secondary" display="block" mb={0.5}>
+                          Example:
+                        </Typography>
+                        <Typography variant="body2" sx={{ fontStyle: "italic" }}>
+                          {item.example_sentence}
+                        </Typography>
+                      </Paper>
+
+                      {/* Essay Source with Navigation */}
+                      {item.essay && (
+                        <Paper variant="outlined" sx={{ p: 1.5, mb: 2, bgcolor: "#e3f2fd" }}>
+                          <Stack direction="row" justifyContent="space-between" alignItems="center">
+                            <Box>
+                              <Typography variant="caption" color="text.secondary" display="block">
+                                From essay:
+                              </Typography>
+                              <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                                {item.essay.title}
+                              </Typography>
+                            </Box>
+                            <Button
+                              size="small"
+                              variant="outlined"
+                              endIcon={<OpenInNew fontSize="small" />}
+                              onClick={() => navigateToEssay(item.essay_id || item.essay?.id || "")}
+                            >
+                              View
+                            </Button>
+                          </Stack>
+                        </Paper>
+                      )}
+
+                      {/* Review Info */}
+                      <Divider sx={{ my: 1 }} />
+                      <Stack direction="row" spacing={2}>
+                        <Typography variant="caption" color="text.secondary">
+                          Reviews: {item.review_count}
+                        </Typography>
+                        {item.exercises_completed > 0 && (
+                          <Typography variant="caption" color="text.secondary">
+                            Exercises: {item.exercises_correct}/{item.exercises_completed}
+                          </Typography>
+                        )}
+                      </Stack>
+                    </Box>
+                  </Collapse>
+                </CardContent>
+
+                <CardActions sx={{ pt: 0 }}>
+                  <Button
                     size="small"
-                    color={getMasteryColor(item.mastery_level) as any}
-                  />
-                  {item.vocabulary.ielts_band_level && (
-                    <Chip
-                      label={item.vocabulary.ielts_band_level}
-                      size="small"
-                      color="secondary"
-                      variant="outlined"
-                    />
-                  )}
-                  {item.vocabulary.word_type && (
-                    <Chip label={item.vocabulary.word_type} size="small" variant="outlined" />
-                  )}
-                  {item.vocabulary.vocabulary_definition_tags.map((tagObj, idx) => (
-                    <Chip
-                      key={idx}
-                      label={tagObj.tag.name}
-                      size="small"
-                      variant="outlined"
-                      sx={{ textTransform: "capitalize" }}
-                    />
-                  ))}
-                </Stack>
-
-                {/* Definition */}
-                <Typography variant="body2" color="text.secondary" paragraph>
-                  <strong>Definition:</strong> {item.vocabulary.definition}
-                </Typography>
-
-                {/* Vietnamese Translation */}
-                {item.vocabulary.vietnamese_translation && (
-                  <Typography variant="body2" color="text.secondary" paragraph>
-                    <strong>Vietnamese:</strong> {item.vocabulary.vietnamese_translation}
-                  </Typography>
-                )}
-
-                {/* Example Sentence */}
-                <Paper variant="outlined" sx={{ p: 1.5, bgcolor: "#f5f5f5", mb: 1 }}>
-                  <Typography variant="caption" color="text.secondary" display="block" mb={0.5}>
-                    Example:
-                  </Typography>
-                  <Typography variant="body2" sx={{ fontStyle: "italic" }}>
-                    {item.example_sentence}
-                  </Typography>
-                </Paper>
-
-                {/* Essay Source */}
-                {item.essay && (
-                  <Typography variant="caption" color="text.secondary">
-                    From essay: <strong>{item.essay.title}</strong>
-                  </Typography>
-                )}
-
-                {/* Review Info */}
-                <Divider sx={{ my: 1 }} />
-                <Stack direction="row" spacing={2}>
-                  <Typography variant="caption" color="text.secondary">
-                    Reviews: {item.review_count}
-                  </Typography>
-                  {item.exercises_completed > 0 && (
-                    <Typography variant="caption" color="text.secondary">
-                      Exercises: {item.exercises_correct}/{item.exercises_completed}
-                    </Typography>
-                  )}
-                </Stack>
-              </CardContent>
-
-              <CardActions>
-                <Button
-                  size="small"
-                  startIcon={<BookmarkRemove />}
-                  onClick={() => handleDelete(item.id)}
-                  disabled={deletingId === item.id}
-                  color="error"
-                >
-                  {deletingId === item.id ? "Removing..." : "Remove"}
-                </Button>
-              </CardActions>
-            </Card>
-          </Grid>
-        ))}
+                    startIcon={<BookmarkRemove />}
+                    onClick={() => handleDelete(item.id)}
+                    disabled={deletingId === item.id}
+                    color="error"
+                  >
+                    {deletingId === item.id ? "Removing..." : "Remove"}
+                  </Button>
+                </CardActions>
+              </Card>
+            </Grid>
+          );
+        })}
       </Grid>
     </Container>
   );
